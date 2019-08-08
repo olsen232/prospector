@@ -1,0 +1,63 @@
+package xor.core;
+
+import static xor.core.Direction.*;
+import static xor.core.PixelConstants.TILE_SIZE;
+
+import playn.core.Image;
+
+public final class Tiles {
+  private Tiles() {}
+
+  public static final int NUM_THEMES = 15;
+  public static final XorImage[][] FLOOR_TILES = new XorImage[NUM_THEMES][];
+  public static final XorImage[][] WALL_TILES = new XorImage[NUM_THEMES][];
+
+  public static final String TEMPLATE =
+      "    " +
+      "o---" +
+      "|###" + 
+      "|###" +
+      "|###";
+
+  public static final ByteGrid TEMPLATE_GRID =
+      new ByteGrid(TEMPLATE.getBytes(), 4, 5);
+
+  public static void start() {
+    Toolkit.start("tiles.png");
+  }
+
+  public static void load() {
+    Image[] themes = Toolkit.tile(Toolkit.get("tiles.png"), 4 * TILE_SIZE, 5 * TILE_SIZE + 1);
+    for (int i = 0; i < NUM_THEMES; i++) {
+      FLOOR_TILES[i] = new XorImage[Cells.NUM_FLOOR_TYPES];
+      WALL_TILES[i] = new XorImage[Cells.NUM_WALL_TYPES];
+
+      XorImage xorTheme = Toolkit.xorImage(themes[i]);
+      if (i == 5) xorTheme = Toolkit.slow(xorTheme, 3);
+      XorImage[] themeTiles = Toolkit.tile(xorTheme, TILE_SIZE);
+
+      int floorType = 0;
+      for (int j = 0; j < TEMPLATE.length(); j++) {
+        if (TEMPLATE.charAt(j) == ' ') {
+          FLOOR_TILES[i][floorType++] = themeTiles[j];
+        } else {
+          WALL_TILES[i][getWallTypeFromTemplate(j)] = themeTiles[j];
+        }
+      }
+    }
+  }
+
+  private static int getWallTypeFromTemplate(int index) {
+    int x = TEMPLATE_GRID.indexToX(index);
+    int y = TEMPLATE_GRID.indexToY(index);
+    int wallType = 0;
+    for (Direction d : Direction.values()) {
+      if (TEMPLATE_GRID.safeGet(x, y) == TEMPLATE_GRID.safeGet(d.dx(x), d.dy(y))) {
+        wallType |= d.bitCode;
+      }
+    } 
+    return wallType;
+  }
+}
+
+  

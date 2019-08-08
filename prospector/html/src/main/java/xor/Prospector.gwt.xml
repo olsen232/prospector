@@ -1,0 +1,11 @@
+<module rename-to='prospector'>
+  <inherits name='playn.Scene'/>
+  <inherits name='ProspectorAssets'/>
+
+  <source path='core'/>
+  <source path='html'/>
+
+  <public path="resources" />
+
+  <entry-point class='xor.html.ProspectorHtml'/>
+</module>
