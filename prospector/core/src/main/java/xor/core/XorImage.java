@@ -36,6 +36,6 @@ public class XorImage {
   }
 
   public int height() {
-    return (int )variants[0].height();
+    return (int) variants[0].height();
   }
 }
