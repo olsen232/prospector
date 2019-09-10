@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -rf ../docs/prospector/
+cp -r html/target/prospector-html-1.0-SNAPSHOT/prospector/ ../docs/prospector/
+cp ../prospector.html ../docs/index.html
