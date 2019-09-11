@@ -31,17 +31,17 @@ public class ListMenu {
     this.back = back;
   }
 
-  public void render(XorSurface xs) {
+  public void render(Surface surface) {
     for (int i = 0; i < NUM_LEVELS_PER_SCREEN; i++) {
       int entryIndex = i + startIndex;
       XorImage[] font = (entryIndex == selectedIndex) ? MenuGfx.WHITE_FONT : MenuGfx.YELLOW_FONT;
-      xs.drawText(font, entries[entryIndex].rowText, START_X, START_Y + i * (FONT_SIZE + LINE_SPACE));
+      surface.drawText(font, entries[entryIndex].rowText, START_X, START_Y + i * (FONT_SIZE + LINE_SPACE));
     }
-    xs.drawTextBox(MenuGfx.BROWN_FONT, listTitle, FOOTER_X, FOOTER_Y, FOOTER_WIDTH, FOOTER_HEIGHT, MenuGfx.BROWN);
+    surface.drawTextBox(MenuGfx.BROWN_FONT, listTitle, FOOTER_X, FOOTER_Y, FOOTER_WIDTH, FOOTER_HEIGHT, MenuGfx.BROWN);
     if (back == Direction.LEFT) {
-      xs.drawTextBox(MenuGfx.BROWN_FONT, "<", 2, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
+      surface.drawTextBox(MenuGfx.BROWN_FONT, "<", 2, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
     } else if (back == Direction.RIGHT) {
-      xs.drawTextBox(MenuGfx.BROWN_FONT, ">", 172, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
+      surface.drawTextBox(MenuGfx.BROWN_FONT, ">", 172, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
     }
   }
 

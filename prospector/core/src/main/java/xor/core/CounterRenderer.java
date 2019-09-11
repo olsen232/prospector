@@ -60,11 +60,11 @@ public class CounterRenderer implements MazeStateListener {
     updateStateIcon();
   }
 
-  public void renderMoves(int percent, XorSurface xs) {
+  public void renderMoves(int percent, Surface xs) {
     render(4, MOVES_DIAL_X, MOVES_DIAL_Y, moves, deltaMoves, percent, xs);
   }
 
-  public void renderBalloons(int percent, XorSurface xs) {
+  public void renderBalloons(int percent, Surface xs) {
     render(2, BALLOONS_DIAL_X, BALLOONS_DIAL_Y, requiredBalloons, deltaRequiredBalloons, percent, xs);
   }
 
@@ -76,7 +76,7 @@ public class CounterRenderer implements MazeStateListener {
     return stateIconOffset;
   }
 
-  private void render(int numDigits, int x, int y, int start, int delta, int percent, XorSurface xs) {
+  private void render(int numDigits, int x, int y, int start, int delta, int percent, Surface xs) {
     x += DIAL_WIDTH * (numDigits - 1);
     int spriteVariant = xs.spriteVariant;
 

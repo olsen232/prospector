@@ -150,17 +150,17 @@ public class LevelEditor {
     handleControls();
   }
 
-  public void render(XorSurface xs) {
+  public void render(Surface surface) {
     int percent = viewport.isMoving()
         ? Ints.clamp(100 * msSinceLastMove / MS_PER_MOVE, 0, 99)
         : 0;
     
-    mazeRenderer.render(viewport, percent, xs, /*gridlines=*/ true);
+    mazeRenderer.render(viewport, percent, surface, /*gridlines=*/ true);
     if (showPalette) {
-      xs.translate(5 * TILE_SIZE, 0);
-      xs.fillRect(0, 0, 3 * TILE_SIZE, 8 * TILE_SIZE, 0xff000000);
-      paletteRenderer.renderAll(0, xs);
-      xs.translate(-5 * TILE_SIZE, 0);
+      surface.translate(5 * TILE_SIZE, 0);
+      surface.fillRect(0, 0, 3 * TILE_SIZE, 8 * TILE_SIZE, 0xff000000);
+      paletteRenderer.renderAll(0, surface);
+      surface.translate(-5 * TILE_SIZE, 0);
     }
   }
 

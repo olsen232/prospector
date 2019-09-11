@@ -14,16 +14,16 @@ public class BaseMazeRenderer {
     this.maze = maze;
   }
 
-  public void renderAll(int percent, XorSurface surface) {
+  public void renderAll(int percent, Surface surface) {
     renderRect(0, 0, maze().width, maze().height, surface);
     drawAnimations(percent, surface);
   }
 
-  public void render(Viewport viewport, int percent, XorSurface surface) {
+  public void render(Viewport viewport, int percent, Surface surface) {
     render(viewport, percent, surface, false);
   }
  
-  public void render(Viewport viewport, int percent, XorSurface surface, boolean renderGridlines) {
+  public void render(Viewport viewport, int percent, Surface surface, boolean renderGridlines) {
     surface.saveTx();
     try {
       float scale = 1f * VIEWPORT_SIZE_TILES / viewport.size();
@@ -43,7 +43,7 @@ public class BaseMazeRenderer {
     }
   }
 
-  private void renderRect(int startX, int startY, int stopX, int stopY, XorSurface surface) {
+  private void renderRect(int startX, int startY, int stopX, int stopY, Surface surface) {
     for (int x = startX; x < stopX; x++) {
       for (int y = startY; y < stopY; y++) {
         if (!maze().isValidXY(x, y)) {
@@ -68,7 +68,7 @@ public class BaseMazeRenderer {
     }
   }
 
-  private void renderGridlines(int startX, int startY, int stopX, int stopY, XorSurface surface) {
+  private void renderGridlines(int startX, int startY, int stopX, int stopY, Surface surface) {
     int height = (stopY - startY) * TILE_SIZE;
     for (int x = startX; x < stopX; x++) {
       surface.fillRect(x * TILE_SIZE, startY * TILE_SIZE, 1, height, 0x88ffffff);
@@ -95,7 +95,7 @@ public class BaseMazeRenderer {
     return true;
   }
 
-  public void drawAnimations(int percent, XorSurface surface) {
+  public void drawAnimations(int percent, Surface surface) {
     // Nothing required.
   }
 

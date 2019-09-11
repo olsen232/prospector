@@ -6,7 +6,6 @@ import xor.core.LoadSave.Loaded;
 
 import playn.core.Image;
 import playn.core.Platform;
-import playn.core.Surface;
 import java.util.List;
 import java.io.ByteArrayInputStream;
 
@@ -193,79 +192,79 @@ public class Menu {
     return lists[activeListIndex];
   }
 
-  public void renderAll(XorSurface xs, Surface s, int ms) {
+  public void renderAll(Surface surface, int ms) {
     boolean isEditorMode = levelEditor.isActive() && !mazeController.isActive();
     XorImage stateIcon = isEditorMode ? levelEditor.stateIcon() : mazeController.stateIcon();
     int stateIconOffset = isEditorMode ? levelEditor.stateIconOffset() : mazeController.stateIconOffset();
 
-    xs.drawSpriteImage(stateIcon, STATE_ICON_X, STATE_ICON_Y + stateIconOffset);
-    xs.drawImage(MenuGfx.TITLE, 0, 0);
+    surface.drawSpriteImage(stateIcon, STATE_ICON_X, STATE_ICON_Y + stateIconOffset);
+    surface.drawImage(MenuGfx.TITLE, 0, 0);
 
     if (isEditorMode) {    
-      xs.drawImage(MenuGfx.EDITOR_BUTTONS, EDITOR_BUTTONS_X, EDITOR_BUTTONS_Y);
+      surface.drawImage(MenuGfx.EDITOR_BUTTONS, EDITOR_BUTTONS_X, EDITOR_BUTTONS_Y);
     }
 
-    renderViewport(xs);
+    renderViewport(surface);
 
     if (mazeController.isActive()) {
-      xs.draw(mazeController.renderMap(), MAP_X, MAP_Y);
+      surface.draw(mazeController.renderMap(), MAP_X, MAP_Y);
     } else if (levelEditor.isActive()) {
-      xs.draw(levelEditor.renderMap(), MAP_X, MAP_Y);
+      surface.draw(levelEditor.renderMap(), MAP_X, MAP_Y);
     }
 
     if (mazeController.isActive()
         || (mazeController.wasActive() && !levelEditor.isActive())) {
-      mazeController.renderMovesCounter(xs);
-      mazeController.renderBalloonsCounter(xs);
+      mazeController.renderMovesCounter(surface);
+      mazeController.renderBalloonsCounter(surface);
     }
   }
 
-  private void renderViewport(XorSurface xs) {
+  private void renderViewport(Surface surface) {
     if (intro) return;
 
-    xs.startClipped(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_SIZE_PX, VIEWPORT_SIZE_PX);
+    surface.startClipped(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_SIZE_PX, VIEWPORT_SIZE_PX);
     try {
-      xs.translate(VIEWPORT_X, VIEWPORT_Y);
-      xs.fillRect(0, 0, VIEWPORT_SIZE_PX, VIEWPORT_SIZE_PX, 0xff000000);
+      surface.translate(VIEWPORT_X, VIEWPORT_Y);
+      surface.fillRect(0, 0, VIEWPORT_SIZE_PX, VIEWPORT_SIZE_PX, 0xff000000);
 
       if (mazeController.isActive()) {
-        mazeController.render(xs);
+        mazeController.render(surface);
       } else if (levelEditor.isActive()) {
-        levelEditor.render(xs);
+        levelEditor.render(surface);
       } else {
-        renderMenu(xs);
+        renderMenu(surface);
       }
-      xs.translate(-VIEWPORT_X, -VIEWPORT_Y);
+      surface.translate(-VIEWPORT_X, -VIEWPORT_Y);
     } finally {
-      xs.endClipped();
+      surface.endClipped();
     }
   }
 
-  private void renderMenu(XorSurface xs) {
+  private void renderMenu(Surface surface) {
     if (activeList() != null) {
-      activeList().render(xs);
+      activeList().render(surface);
     } else {
-      renderMainMenu(xs);
+      renderMainMenu(surface);
     }
   }
 
-  private void renderMainMenu(XorSurface xs) {
-    xs.drawCenteredText(MenuGfx.BROWN_FONT, "Guide the Prospectors", 96, 12);
-    xs.drawCenteredText(MenuGfx.BROWN_FONT, "through the", 96, 24);
-    xs.drawTextBox(MenuGfx.BROWN_FONT, "Mazes\nof Xor", 8, 40, 84, 40, MenuGfx.BROWN);
-    xs.drawTextBox(MenuGfx.BROWN_FONT, "Mazes of\nProcyon", 99, 40, 84, 40, MenuGfx.BROWN);
-    xs.drawTextBox(MenuGfx.WHITE_FONT, "<", 2, 52, 15, 15, MenuGfx.BROWN);
-    xs.drawTextBox(MenuGfx.WHITE_FONT, ">", 174, 52, 15, 15, MenuGfx.BROWN);
+  private void renderMainMenu(Surface surface) {
+    surface.drawCenteredText(MenuGfx.BROWN_FONT, "Guide the Prospectors", 96, 12);
+    surface.drawCenteredText(MenuGfx.BROWN_FONT, "through the", 96, 24);
+    surface.drawTextBox(MenuGfx.BROWN_FONT, "Mazes\nof Xor", 8, 40, 84, 40, MenuGfx.BROWN);
+    surface.drawTextBox(MenuGfx.BROWN_FONT, "Mazes of\nProcyon", 99, 40, 84, 40, MenuGfx.BROWN);
+    surface.drawTextBox(MenuGfx.WHITE_FONT, "<", 2, 52, 15, 15, MenuGfx.BROWN);
+    surface.drawTextBox(MenuGfx.WHITE_FONT, ">", 174, 52, 15, 15, MenuGfx.BROWN);
 
     int tip = Ints.modulo(menuMs / 5000, TIP_SPRITES.length);
-    xs.drawSpriteImage(Sprites.CELLS[TIP_SPRITES[tip].code], 8, 96);
-    xs.drawTextBox(MenuGfx.BROWN_FONT, TIP_TEXT[tip], 34, 98, 152, 20, 0);
+    surface.drawSpriteImage(Sprites.CELLS[TIP_SPRITES[tip].code], 8, 96);
+    surface.drawTextBox(MenuGfx.BROWN_FONT, TIP_TEXT[tip], 34, 98, 152, 20, 0);
 
-    xs.drawTextBox(MenuGfx.BROWN_FONT, "Load/Save", 8, 134, 84, 20, MenuGfx.BROWN);
-    xs.drawTextBox(MenuGfx.BROWN_FONT, "Level\nEditor", 99, 134, 84, 20, MenuGfx.BROWN);
+    surface.drawTextBox(MenuGfx.BROWN_FONT, "Load/Save", 8, 134, 84, 20, MenuGfx.BROWN);
+    surface.drawTextBox(MenuGfx.BROWN_FONT, "Level\nEditor", 99, 134, 84, 20, MenuGfx.BROWN);
 
     int credit = Ints.modulo((menuMs - 2500) / 5000, CREDITS_TEXT.length);
-    xs.drawTextWithNewLines(MenuGfx.BROWN_FONT, CREDITS_TEXT[credit], 8, 164);
+    surface.drawTextWithNewLines(MenuGfx.BROWN_FONT, CREDITS_TEXT[credit], 8, 164);
   }
 
   private static final CellType[] TIP_SPRITES = new CellType[] {

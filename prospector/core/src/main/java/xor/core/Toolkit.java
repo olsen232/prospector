@@ -3,7 +3,6 @@ package xor.core;
 import static xor.core.PixelConstants.ZOOM;
 
 import playn.core.Image;
-import playn.core.Platform;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -207,46 +206,17 @@ public final class Toolkit {
     return map.get(s);
   }
 
-  public static Image zoom(Image in) {
-    return zoom(in, ZOOM);
-  }
-
-  public static Image zoom(Image in, int zoom) {
-    int w = (int) in.width();
-    int h = (int) in.height();
-    int[] pixels = new int[w * h];
-    in.getRgb(0, 0, w, h, pixels, 0, w);
-    int w2 = zoom * w;
-    int h2 = zoom * h;
-    int[] pixels2 = new int[w2 * h2];
-    for (int x = 0; x < w2; x++) {
-      for (int y = 0; y < h2; y++) {
-        pixels2[y * w2 + x] = pixels[(y / zoom) * w + (x / zoom)];
-      }
-    }
-    playn.core.Canvas c = createCanvas(w2, h2);
-    c.image.setRgb(0, 0, w2, h2, pixels2, 0, w2);
-    return c.image;
-  }
-
   public static void start(String s) {
     if (!map.containsKey(s)) {
-      map.put(s, platform.assets().getImage(s));
+      map.put(s, Platform.INSTANCE.raw.assets().getImage(s));
     }
   }
 
   public static XorImage getAsXor(String s) {
     return new XorImage(new Image[]{ get(s) });
   }
-
-  public interface CanvasCreator {
-    playn.core.Canvas createCanvas(int pixelWidth, int pixelHeight);
-  }
-
-  public static CanvasCreator canvasCreator;
-
+  
   public static playn.core.Canvas createCanvas(int pixelWidth, int pixelHeight) {
-    if (canvasCreator != null) return canvasCreator.createCanvas(pixelWidth, pixelHeight);
-    return platform.graphics().createCanvas(pixelWidth, pixelHeight);
+    return Platform.INSTANCE.createRawCanvas(pixelWidth, pixelHeight);
   }
 }

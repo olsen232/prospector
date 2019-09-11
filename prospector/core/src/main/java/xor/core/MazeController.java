@@ -228,9 +228,9 @@ public class MazeController {
     }
   }
 
-  public void renderDialog(XorSurface xs) {
+  public void renderDialog(Surface surface) {
     if (dialogText() != null) {
-      xs.drawTextBox(MenuGfx.BROWN_FONT, dialogText(), DIALOG_X, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT, MenuGfx.BROWN);
+      surface.drawTextBox(MenuGfx.BROWN_FONT, dialogText(), DIALOG_X, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT, MenuGfx.BROWN);
     }
   }
 
@@ -247,12 +247,12 @@ public class MazeController {
     return counterRenderer.stateIconOffset();
   }
 
-  public void renderMovesCounter(XorSurface xs) {
-    counterRenderer.renderMoves(percent(), xs);
+  public void renderMovesCounter(Surface surface) {
+    counterRenderer.renderMoves(percent(), surface);
   }
 
-  public void renderBalloonsCounter(XorSurface xs) {
-    counterRenderer.renderBalloons(percent(), xs);
+  public void renderBalloonsCounter(Surface surface) {
+    counterRenderer.renderBalloons(percent(), surface);
   }
 
   private int percent() {
@@ -395,9 +395,9 @@ public class MazeController {
     }
   }
 
-  public void render(XorSurface xs) {
-    mazeRenderer.render(getActiveViewport(), percent(), xs);
-    renderDialog(xs);
+  public void render(Surface surface) {
+    mazeRenderer.render(getActiveViewport(), percent(), surface);
+    renderDialog(surface);
   }
 
   private boolean isStateSkippable() {

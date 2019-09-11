@@ -84,13 +84,13 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
   }
 
   @Override
-  public void drawAnimations(int percent, XorSurface xs) {
-    drawActivePlayer(percent, xs);
-    drawActiveObject(percent, xs);
+  public void drawAnimations(int percent, Surface surface) {
+    drawActivePlayer(percent, surface);
+    drawActiveObject(percent, surface);
   }
 
 
-  private void drawActivePlayer(int percent, XorSurface xs) {
+  private void drawActivePlayer(int percent, Surface surface) {
     Player player = mazeState.getActivePlayer();
     if (player == null) return;
     int x = player.x();
@@ -98,19 +98,19 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
 
     if (mazeState.state() == State.SWITCHING_PLAYER) {
       Pose pose = percent < 50 ? Pose.UP : Pose.DOWN;
-      xs.drawSpriteTile(Sprites.PLAYERS_POSES[player.code][pose.code], x, y); 
+      surface.drawSpriteTile(Sprites.PLAYERS_POSES[player.code][pose.code], x, y); 
 
     } else if (player.isAlive() || player.state() == PlayerState.TELEPORTING) {
       Pose pose = player.pose(percent);
       XorImage sprite = Sprites.PLAYERS_POSES[player.code][pose.code];
-      xs.drawSlidingSpriteTile(sprite, x, y, player.movement(), percent);
+      surface.drawSlidingSpriteTile(sprite, x, y, player.movement(), percent);
 
     } else if (player.state() == PlayerState.DYING) {
-      xs.animateSpriteTile(Sprites.PLAYERS_DYING[player.code], x, y, 3, percent);
+      surface.animateSpriteTile(Sprites.PLAYERS_DYING[player.code], x, y, 3, percent);
     }
   }
 
-  private void drawActiveObject(int percent, XorSurface xs) {
+  private void drawActiveObject(int percent, Surface surface) {
     int x, y;
     switch (mazeState.state()) {
       case PLAYER_PUSHING_OBJECT:
@@ -127,7 +127,7 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
           sprite = Sprites.ROCK_EYES[(int)(Sprites.ROCK_EYES.length * Math.random())];
         }
 
-        xs.drawSlidingSpriteTile(sprite, x, y, mazeState.movement(), percent);
+        surface.drawSlidingSpriteTile(sprite, x, y, mazeState.movement(), percent);
 
         break;
       case EXPLOSION:
@@ -135,9 +135,9 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
         y = mazeState.getActiveObjectY();
         cellType = mazeState.getActiveObjectType();
         int frame = 2 + (Sprites.EXPLOSION.length - 2) * percent / 100;
-        xs.drawSpriteTile(Sprites.EXPLOSION[frame], x, y);
+        surface.drawSpriteTile(Sprites.EXPLOSION[frame], x, y);
         for (Direction d : MazeState.getExplosionDirections(cellType)) {
-          xs.animateSpriteTile(Sprites.EXPLOSION, d.dx(x), d.dy(y), 1, percent);
+          surface.animateSpriteTile(Sprites.EXPLOSION, d.dx(x), d.dy(y), 1, percent);
         }
       default:
     }

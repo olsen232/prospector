@@ -10,7 +10,7 @@ import playn.core.Scale;
 import static xor.core.PixelConstants.*;
 
 import xor.core.Prospector;
-import xor.core.Toolkit;
+import xor.core.Platform;
 
 import java.lang.reflect.Field;
 
@@ -20,20 +20,21 @@ public class ProspectorJava {
     LWJGLPlatform.Config config = new LWJGLPlatform.Config();
     config.width = SCREEN_WIDTH * ZOOM;
     config.height = SCREEN_HEIGHT * ZOOM;
-    LWJGLPlatform plat = new LWJGLPlatform(config);
-    JavaCanvasCreator cc = new JavaCanvasCreator(plat.graphics());
-    new Prospector(plat, cc);
-    plat.start();
+    LWJGLPlatform raw = new LWJGLPlatform(config);
+    Platform platform = new Platform(raw);
+    platform.canvasCreator = new JavaCanvasCreator(raw.graphics());    
+    new Prospector(platform);
+    raw.start();
   }
   
-  static class JavaCanvasCreator implements Toolkit.CanvasCreator {
+  static class JavaCanvasCreator implements Platform.CanvasCreator {
     private final Graphics graphics; 
     
     JavaCanvasCreator(Graphics graphics) {
       this.graphics = graphics;
     }
 
-    public Canvas createCanvas(int pixelWidth, int pixelHeight) {
+    public Canvas create(int pixelWidth, int pixelHeight) {
       try {
         Field f = Graphics.class.getDeclaredField("scale");
         f.setAccessible(true);

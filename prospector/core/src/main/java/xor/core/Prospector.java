@@ -7,7 +7,6 @@ import playn.core.Clock;
 import playn.core.Image;
 import playn.core.Keyboard;
 import playn.core.Mouse;
-import playn.core.Platform;
 import playn.scene.ImageLayer;
 import playn.scene.SceneGame;
 import react.Slot;
@@ -18,29 +17,22 @@ public class Prospector extends SceneGame {
 
   private Menu menu;
   private ControlState controlState;
-  private XorSurface surface;
+  private Surface surface;
   private boolean loadingFinished = false;
   private boolean titleLoaded = false;
   private boolean fontLoaded = false;
   private boolean isMusicCancelled = false;
 
-  public Prospector(Platform plat, Toolkit.CanvasCreator canvasCreator) {
-    this(plat);
-    Toolkit.canvasCreator = canvasCreator;
-  }
-
-  public Prospector(Platform plat) {
-    super(plat, FRAME_MS);
-    surface = new XorSurface(viewSurf);
-    surface.scaleFactor = plat.graphics().scale().factor;
-
-    Toolkit.platform = plat;
+  public Prospector(Platform platform) {
+    super(platform.raw, FRAME_MS);
+    surface = new Surface(viewSurf);
+    surface.scaleFactor = platform.raw.graphics().scale().factor;
 
     MenuGfx.start();
     Tiles.start();
     Sprites.start();
-    Sounds.start(plat);
-    Mazes.start(plat);
+    Sounds.start(platform.raw);
+    Mazes.start(platform.raw);
 
     controlState = new ControlState();
 
@@ -105,15 +97,16 @@ public class Prospector extends SceneGame {
 
   @Override
   public void paintScene() {
-    viewSurf.saveTx();
-    viewSurf.begin();
-    viewSurf.clear(0.0f, 0.0f, 0.0f, 1.0f);
+    surface.saveTx();
+    surface.begin();
+    surface.clear(0, 0, 0, 1);
     
     surface.setVariants(frame++, FRAME_MS);
     surface.scale(ZOOM, ZOOM);
+    
     try {
       if (loadingFinished) {
-        menu.renderAll(surface, viewSurf, FRAME_MS / 2);
+        menu.renderAll(surface, FRAME_MS / 2);
       } else if (fontLoaded) {
         surface.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff000000);
         if (titleLoaded) {
@@ -122,19 +115,19 @@ public class Prospector extends SceneGame {
         }
         renderLoadingProgress(surface);
       } else {
-        viewSurf.clear(1.0f, 1.0f, 1.0f, 1.0f);
+        viewSurf.clear(1, 1, 1, 1);
       }
       
     } finally {
-      viewSurf.end();
-      viewSurf.restoreTx();
+      surface.end();
+      surface.restoreTx();
     }
   }
 
-  private void renderLoadingProgress(XorSurface xs) {
-    xs.drawText(MenuGfx.YELLOW_FONT, Toolkit.imagesLoadedDesc(), 8 * 3, 8 * 3);
-    xs.drawText(MenuGfx.YELLOW_FONT, Sounds.soundsLoadedDesc(), 8 * 3, 8 * 5);
-    xs.drawText(MenuGfx.YELLOW_FONT, Sounds.musicLoadedDesc(), 8 * 3, 8 * 7);
-    xs.drawText(MenuGfx.YELLOW_FONT, isMusicCancelled ? "Music cancelled" : "[Esc] to cancel music", 8 * 3, 8 * 9);
+  private void renderLoadingProgress(Surface surface) {
+    surface.drawText(MenuGfx.YELLOW_FONT, Toolkit.imagesLoadedDesc(), 8 * 3, 8 * 3);
+    surface.drawText(MenuGfx.YELLOW_FONT, Sounds.soundsLoadedDesc(), 8 * 3, 8 * 5);
+    surface.drawText(MenuGfx.YELLOW_FONT, Sounds.musicLoadedDesc(), 8 * 3, 8 * 7);
+    surface.drawText(MenuGfx.YELLOW_FONT, isMusicCancelled ? "Music cancelled" : "[Esc] to cancel music", 8 * 3, 8 * 9);
   }
 }

@@ -5,16 +5,15 @@ import static xor.core.PixelConstants.TILE_SIZE;
 import static xor.core.PixelConstants.ZOOM;
 
 import playn.core.Image;
-import playn.core.Surface;
 
-public class XorSurface {
+public class Surface {
 
   public final playn.core.Surface raw;
   public int mapVariant = 0;
   public int spriteVariant = 0;
   public float scaleFactor = 1;
 
-  public XorSurface(playn.core.Surface raw) {
+  public Surface(playn.core.Surface raw) {
     this.raw = raw;
   }
 
@@ -60,7 +59,9 @@ public class XorSurface {
 
   public void drawImage(XorImage image, int x, int y) {
     if (image != null) {
+      Platform.INSTANCE.pixelate();
       draw(image.variant(0), x, y);
+      Platform.INSTANCE.pixelate();
     }
   }
 
@@ -145,8 +146,8 @@ public class XorSurface {
   }
 
   public void fillRect(float x, float y, float w, float h, int color) {
-   raw.setFillColor(color);
-   raw.fillRect(x, y, w, h);
+    raw.setFillColor(color);
+    raw.fillRect(x, y, w, h);
   }
 
   public static int mapVariant(int frame, int msPerFrame) {
