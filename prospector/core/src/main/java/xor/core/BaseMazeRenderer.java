@@ -14,35 +14,36 @@ public class BaseMazeRenderer {
     this.maze = maze;
   }
 
-  public void renderAll(int percent, XorSurface xs) {
-    renderRect(0, 0, maze().width, maze().height, xs);
-    drawAnimations(percent, xs);
+  public void renderAll(int percent, XorSurface surface) {
+    renderRect(0, 0, maze().width, maze().height, surface);
+    drawAnimations(percent, surface);
   }
 
-  public void render(Viewport viewport, int percent, XorSurface xs) {
-    render(viewport, percent, xs, false);
+  public void render(Viewport viewport, int percent, XorSurface surface) {
+    render(viewport, percent, surface, false);
   }
  
-  public void render(Viewport viewport, int percent, XorSurface xs, boolean renderGridlines) {
-    float scale = 1f * VIEWPORT_SIZE_TILES / viewport.size();
-    xs.surface.scale(scale, scale);
+  public void render(Viewport viewport, int percent, XorSurface surface, boolean renderGridlines) {
+    surface.saveTx();
+    try {
+      float scale = 1f * VIEWPORT_SIZE_TILES / viewport.size();
+      surface.scale(scale, scale);
 
-    int offsetX = -viewport.movingOriginXInPx(percent);
-    int offsetY = -viewport.movingOriginYInPx(percent);
-    xs.translate(offsetX, offsetY);
+      int offsetX = -viewport.movingOriginXInPx(percent);
+      int offsetY = -viewport.movingOriginYInPx(percent);
+      surface.translate(offsetX, offsetY);
 
-    renderRect(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), xs);
-    if (renderGridlines && scale >= 0.5f) {
-      renderGridlines(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), xs);
+      renderRect(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
+      if (renderGridlines && scale >= 0.5f) {
+        renderGridlines(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
+      }
+      drawAnimations(percent, surface);
+    } finally {
+      surface.restoreTx();
     }
-    drawAnimations(percent, xs);
-
-    xs.translate(-offsetX, -offsetY);
-
-    xs.surface.scale(1f / scale, 1f / scale);
   }
 
-  private void renderRect(int startX, int startY, int stopX, int stopY, XorSurface xs) {
+  private void renderRect(int startX, int startY, int stopX, int stopY, XorSurface surface) {
     for (int x = startX; x < stopX; x++) {
       for (int y = startY; y < stopY; y++) {
         if (!maze().isValidXY(x, y)) {
@@ -51,30 +52,30 @@ public class BaseMazeRenderer {
 
         int cell = maze().get(x, y);
         if (drawFloor(x, y)) {
-          xs.drawMapTile(getFloorTile(cell), x, y);
+          surface.drawMapTile(getFloorTile(cell), x, y);
         }
         
         if (Cells.isWall(cell)) {
           if (drawWall(x, y)) {
-            xs.drawMapTile(getWallTile(cell), x, y);
+            surface.drawMapTile(getWallTile(cell), x, y);
           }
         } else {
           if (drawSprite(x, y)) {
-            xs.drawSpriteTile(getSpriteTile(cell), x, y);
+            surface.drawSpriteTile(getSpriteTile(cell), x, y);
           }
         }
       }
     }
   }
 
-  private void renderGridlines(int startX, int startY, int stopX, int stopY, XorSurface xs) {
+  private void renderGridlines(int startX, int startY, int stopX, int stopY, XorSurface surface) {
     int height = (stopY - startY) * TILE_SIZE;
     for (int x = startX; x < stopX; x++) {
-      xs.fillRect(x * TILE_SIZE, startY * TILE_SIZE, 1, height, 0x88ffffff);
+      surface.fillRect(x * TILE_SIZE, startY * TILE_SIZE, 1, height, 0x88ffffff);
     }
     int width = (stopX - startX) * TILE_SIZE;
     for (int y = startY; y < stopY; y++) {
-      xs.fillRect(startX * TILE_SIZE, y * TILE_SIZE, width, 1, 0x88ffffff);
+      surface.fillRect(startX * TILE_SIZE, y * TILE_SIZE, width, 1, 0x88ffffff);
     }
   }
 
@@ -94,7 +95,7 @@ public class BaseMazeRenderer {
     return true;
   }
 
-  public void drawAnimations(int percent, XorSurface xs) {
+  public void drawAnimations(int percent, XorSurface surface) {
     // Nothing required.
   }
 

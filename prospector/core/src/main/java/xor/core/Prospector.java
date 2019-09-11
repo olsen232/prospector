@@ -18,6 +18,7 @@ public class Prospector extends SceneGame {
 
   private Menu menu;
   private ControlState controlState;
+  private XorSurface surface;
   private boolean loadingFinished = false;
   private boolean titleLoaded = false;
   private boolean fontLoaded = false;
@@ -30,6 +31,8 @@ public class Prospector extends SceneGame {
 
   public Prospector(Platform plat) {
     super(plat, FRAME_MS);
+    surface = new XorSurface(viewSurf);
+    surface.scaleFactor = plat.graphics().scale().factor;
 
     Toolkit.platform = plat;
 
@@ -106,19 +109,18 @@ public class Prospector extends SceneGame {
     viewSurf.begin();
     viewSurf.clear(0.0f, 0.0f, 0.0f, 1.0f);
     
-    XorSurface xs = new XorSurface(viewSurf);
-    xs.scaleFactor = Toolkit.platform.graphics().scale().factor;
-    xs.setVariants(frame++, FRAME_MS);
+    surface.setVariants(frame++, FRAME_MS);
+    surface.scale(ZOOM, ZOOM);
     try {
       if (loadingFinished) {
-        menu.renderAll(xs, viewSurf, FRAME_MS / 2);
+        menu.renderAll(surface, viewSurf, FRAME_MS / 2);
       } else if (fontLoaded) {
-        xs.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff000000);
+        surface.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff000000);
         if (titleLoaded) {
-          xs.drawImage(MenuGfx.TITLE, 0, 0);
-          xs.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x88000000);
+          surface.drawImage(MenuGfx.TITLE, 0, 0);
+          surface.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x88000000);
         }
-        renderLoadingProgress(xs);
+        renderLoadingProgress(surface);
       } else {
         viewSurf.clear(1.0f, 1.0f, 1.0f, 1.0f);
       }

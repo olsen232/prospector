@@ -9,26 +9,39 @@ import playn.core.Surface;
 
 public class XorSurface {
 
-  public Surface surface;
+  public final playn.core.Surface raw;
   public int mapVariant = 0;
   public int spriteVariant = 0;
   public float scaleFactor = 1;
 
-  public XorSurface(Surface surface) {
-    this.surface = surface;
+  public XorSurface(playn.core.Surface raw) {
+    this.raw = raw;
   }
 
   public void setVariants(int frame, int msPerFrame) {
     mapVariant = mapVariant(frame, msPerFrame);
     spriteVariant = spriteVariant(frame, msPerFrame);
   }
+  
+  public void begin() { raw.begin(); }
+  public void end() { raw.end(); }
+  public void saveTx() { raw.saveTx(); }
+  public void restoreTx() { raw.restoreTx(); }
+  
+  public void clear(float r, float g, float b, float a) {
+    raw.clear(r, g, b, a);
+  }
+  
+  public void scale(float x, float y) {
+    raw.scale(x, y);
+  }
 
   public void translate(int x, int y) {
-    surface.translate(x * ZOOM, y * ZOOM);
+    raw.translate(x, y);
   }
 
   public void startClipped(int x, int y, int w, int h) {
-    surface.startClipped(
+    raw.startClipped(
         (int) (x * ZOOM * scaleFactor),
         (int) (y * ZOOM * scaleFactor),
         (int) (w * ZOOM * scaleFactor),
@@ -36,30 +49,30 @@ public class XorSurface {
   }
 
   public void endClipped() {
-    surface.endClipped();
+    raw.endClipped();
   }
 
   public void draw(Image image, int x, int y) {
     if (image != null) {
-      surface.draw(image.texture(), x * ZOOM, y * ZOOM);
+      raw.draw(image.texture(), x, y);
     }
   }
 
   public void drawImage(XorImage image, int x, int y) {
     if (image != null) {
-      draw(image.zoomedVariant(0), x, y);
+      draw(image.variant(0), x, y);
     }
   }
 
   public void drawSpriteImage(XorImage image, int x, int y) {
     if (image != null) {
-      draw(image.zoomedVariant(spriteVariant), x, y);
+      draw(image.variant(spriteVariant), x, y);
     }
   }
 
   public void drawMapImage(XorImage image, int x, int y) {
     if (image != null) {
-      draw(image.zoomedVariant(mapVariant), x, y);
+      draw(image.variant(mapVariant), x, y);
     }
   }
 
@@ -132,8 +145,8 @@ public class XorSurface {
   }
 
   public void fillRect(float x, float y, float w, float h, int color) {
-   surface.setFillColor(color);
-   surface.fillRect(ZOOM * x, ZOOM * y, ZOOM * w, ZOOM * h);
+   raw.setFillColor(color);
+   raw.fillRect(x, y, w, h);
   }
 
   public static int mapVariant(int frame, int msPerFrame) {

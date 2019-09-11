@@ -42,7 +42,7 @@ public class MapRenderer implements MazeStateListener {
     size = 1;
 
     size = findSize(mazeState.maze());
-    zoom = MAP_SIZE * ZOOM / size;
+    zoom = MAP_SIZE / size;
     originX = (size - mazeState.maze().width) / 2;
     originY = (size - mazeState.maze().height) / 2;
 
@@ -76,9 +76,9 @@ public class MapRenderer implements MazeStateListener {
   }
 
   public void updateMap() {
-    Canvas canvas = Toolkit.createCanvas(MAP_SIZE * ZOOM, MAP_SIZE * ZOOM);
+    Canvas canvas = Toolkit.createCanvas(MAP_SIZE, MAP_SIZE);
     canvas.setFillColor(0xff000000);
-    canvas.fillRect(0, 0, MAP_SIZE * ZOOM, MAP_SIZE * ZOOM);
+    canvas.fillRect(0, 0, MAP_SIZE, MAP_SIZE);
 
     int width = maze().width;
     int height = maze().height;
