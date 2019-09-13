@@ -4,8 +4,6 @@ import static xor.core.PixelConstants.*;
 import xor.core.Cells.CellType;
 import xor.core.LoadSave.Loaded;
 
-import playn.core.Image;
-import playn.core.Platform;
 import java.util.List;
 import java.io.ByteArrayInputStream;
 
@@ -24,29 +22,16 @@ public class Menu {
 
   private LevelEditor levelEditor;
 
-  private static Menu instance;
+  public static Menu INSTANCE;
 
-  public Menu(ControlState controlState) {
+  public Menu(ControlState controlState, List<Maze> xorMaxes, List<Maze> procyonMazes) {
     this.controlState = controlState;
-    levelEditor = new LevelEditor(LevelEditor.defaultEditorMaze(), controlState);
-    instance = this;
-  }
-
-  public void init(Platform plat) {
-    try {
-      lists = new ListMenu[] {
-          new ListMenu("Mazes of Xor",
-              AsciiMazeLoader.loadList(Mazes.XOR_MAZES),
-              Direction.RIGHT),
-          null,
-          new ListMenu("Mazes of Procyon",
-              AsciiMazeLoader.loadList(Mazes.PROCYON_MAZES),
-              Direction.LEFT),
-      };
-      activeListIndex = 1;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    this.lists = new ListMenu[] {
+      new ListMenu("Mazes of Xor", xorMaxes, Direction.RIGHT),
+      null,
+      new ListMenu("Mazes of Procyon", procyonMazes, Direction.LEFT),
+    };
+    this.levelEditor = new LevelEditor(LevelEditor.defaultEditorMaze(), controlState);
   }
 
   private boolean exitIntro() {
@@ -105,11 +90,7 @@ public class Menu {
     }
   }
 
-  public static void load(String s) {
-    instance.loadInstance(s);
-  }
-
-  public void loadInstance(String s) {
+  public void load(String s) {
     loadSave = false;
     Loaded loaded = LoadSave.load(s, lists[0], lists[2]);
     if (loaded == null) {
@@ -141,14 +122,14 @@ public class Menu {
     if (controlState.isFreshMusicClick()) {
       Sounds.music = !Sounds.music;
       if (Sounds.music) {
-        Sounds.get("partiture").play();
+        Sounds.PARTITURE.play();
       } else {
-        Sounds.get("partiture").stop();
+        Sounds.PARTITURE.stop();
       }
     } else if (controlState.isFreshSoundClick()) {
       Sounds.sounds = !Sounds.sounds;
       if (Sounds.sounds) {
-        Sounds.get("thump").play();
+        Sounds.THUMP.play();
       }
     } else if (controlState.isFreshReplayClick()) {
       if (mazeController.callback instanceof HighscoreCallback) {
@@ -194,14 +175,14 @@ public class Menu {
 
   public void renderAll(Surface surface, int ms) {
     boolean isEditorMode = levelEditor.isActive() && !mazeController.isActive();
-    XorImage stateIcon = isEditorMode ? levelEditor.stateIcon() : mazeController.stateIcon();
+    Image stateIcon = isEditorMode ? levelEditor.stateIcon() : mazeController.stateIcon();
     int stateIconOffset = isEditorMode ? levelEditor.stateIconOffset() : mazeController.stateIconOffset();
 
-    surface.drawSpriteImage(stateIcon, STATE_ICON_X, STATE_ICON_Y + stateIconOffset);
-    surface.drawImage(MenuGfx.TITLE, 0, 0);
+    surface.draw(stateIcon, STATE_ICON_X, STATE_ICON_Y + stateIconOffset);
+    surface.draw(MenuGfx.TITLE, 0, 0);
 
     if (isEditorMode) {    
-      surface.drawImage(MenuGfx.EDITOR_BUTTONS, EDITOR_BUTTONS_X, EDITOR_BUTTONS_Y);
+      surface.draw(MenuGfx.EDITOR_BUTTONS, EDITOR_BUTTONS_X, EDITOR_BUTTONS_Y);
     }
 
     renderViewport(surface);
@@ -257,7 +238,7 @@ public class Menu {
     surface.drawTextBox(MenuGfx.WHITE_FONT, ">", 174, 52, 15, 15, MenuGfx.BROWN);
 
     int tip = Ints.modulo(menuMs / 5000, TIP_SPRITES.length);
-    surface.drawSpriteImage(Sprites.CELLS[TIP_SPRITES[tip].code], 8, 96);
+    surface.draw(Sprites.CELLS[TIP_SPRITES[tip].code], 8, 96);
     surface.drawTextBox(MenuGfx.BROWN_FONT, TIP_TEXT[tip], 34, 98, 152, 20, 0);
 
     surface.drawTextBox(MenuGfx.BROWN_FONT, "Load/Save", 8, 134, 84, 20, MenuGfx.BROWN);

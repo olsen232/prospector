@@ -4,8 +4,6 @@ import static xor.core.PixelConstants.*;
 
 import xor.core.Cells.CellType;
 
-import playn.core.Image;
-
 public class BaseMazeRenderer {
 
   protected Maze maze;
@@ -52,16 +50,16 @@ public class BaseMazeRenderer {
 
         int cell = maze().get(x, y);
         if (drawFloor(x, y)) {
-          surface.drawMapTile(getFloorTile(cell), x, y);
+          surface.drawTile(getFloorTile(cell), x, y);
         }
         
         if (Cells.isWall(cell)) {
           if (drawWall(x, y)) {
-            surface.drawMapTile(getWallTile(cell), x, y);
+            surface.drawTile(getWallTile(cell), x, y);
           }
         } else {
           if (drawSprite(x, y)) {
-            surface.drawSpriteTile(getSpriteTile(cell), x, y);
+            surface.drawTile(getSpriteTile(cell), x, y);
           }
         }
       }
@@ -99,23 +97,23 @@ public class BaseMazeRenderer {
     // Nothing required.
   }
 
-  protected XorImage[] getThemedFloorTiles() {
+  protected Image[] getThemedFloorTiles() {
     return Tiles.FLOOR_TILES[maze().floorTheme];
   }
 
-  protected XorImage getFloorTile(int cell) {
+  protected Image getFloorTile(int cell) {
     return getThemedFloorTiles()[Cells.floorType(cell)];
   }
 
-  protected XorImage[] getThemedWallTiles() {
+  protected Image[] getThemedWallTiles() {
     return Tiles.WALL_TILES[maze().wallTheme];
   }
 
-  protected XorImage getWallTile(int cell) {
+  protected Image getWallTile(int cell) {
     return getThemedWallTiles()[Cells.wallType(cell)];
   }
 
-  protected XorImage getSpriteTile(int cell) {
+  protected Image getSpriteTile(int cell) {
     CellType cellType = Cells.cellType(cell);
     if (cellType == CellType.EMPTY || cellType == CellType.UNKNOWN) {
       return null;

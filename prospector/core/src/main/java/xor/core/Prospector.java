@@ -4,10 +4,8 @@ import static xor.core.PixelConstants.*;
 
 import playn.core.Canvas;
 import playn.core.Clock;
-import playn.core.Image;
 import playn.core.Keyboard;
 import playn.core.Mouse;
-import playn.scene.ImageLayer;
 import playn.scene.SceneGame;
 import react.Slot;
 
@@ -28,11 +26,11 @@ public class Prospector extends SceneGame {
     surface = new Surface(viewSurf);
     surface.scaleFactor = platform.raw.graphics().scale().factor;
 
-    MenuGfx.start();
-    Tiles.start();
-    Sprites.start();
-    Sounds.start(platform.raw);
-    Mazes.start(platform.raw);
+    MenuGfx.startLoading();
+    Tiles.startLoading();
+    Sprites.startLoading();
+    Sounds.startLoading();
+    Mazes.startLoading();
 
     controlState = new ControlState();
 
@@ -43,7 +41,6 @@ public class Prospector extends SceneGame {
 	  Keyboard.KeyEvent ke = (Keyboard.KeyEvent) e;
           controlState.onKeyChange(ke.key, ke.down);
           if (!loadingFinished && ke.key == playn.core.Key.ESCAPE) {
-            isMusicCancelled = true;
             Sounds.music = false;
           }
         }
@@ -67,27 +64,25 @@ public class Prospector extends SceneGame {
     if (loadingFinished) {
       menu.tick(FRAME_MS);
 
-    } else if (!fontLoaded && Toolkit.get("widefont.png") != null && Toolkit.get("widefont.png").isLoaded()) {
-      MenuGfx.loadFont();
+    } else if (!fontLoaded && MenuGfx.FONT_RAW.isLoaded()) {
+      MenuGfx.finishLoadingFont();
       fontLoaded = true;
 
-    } else if (!titleLoaded && Toolkit.get("title.png") != null && Toolkit.get("title.png").isLoaded()) {
-      MenuGfx.loadTitle();
+    } else if (!titleLoaded && MenuGfx.TITLE.isLoaded()) {
+      MenuGfx.finishLoading();
       titleLoaded = true;
 
-    } else if (Toolkit.isImagesLoaded() && Mazes.isLoaded() && Sounds.isLoaded() && (isMusicCancelled || Sounds.isMusicLoaded())) {
-      MenuGfx.loadSidebar();
-      Tiles.load();
-      Sprites.load();
-      Sounds.load();
-      Mazes.load();
+    } else if (Loader.isLoaded() && Mazes.isLoaded()) {
+      Tiles.finishLoading();
+      Sprites.finishLoading();
+      Sounds.finishLoading();
+      Mazes.finishLoading();
 
-      menu = new Menu(controlState);
-      menu.init(plat);
+      Menu.INSTANCE = menu = new Menu(controlState, Mazes.XOR_MAZES, Mazes.PROCYON_MAZES);
 
       controlState.clearFresh();
       if (!isMusicCancelled) {
-        Sounds.get("partiture").play();
+        Sounds.PARTITURE.play();
       }
       loadingFinished = true;
     }
@@ -110,7 +105,7 @@ public class Prospector extends SceneGame {
       } else if (fontLoaded) {
         surface.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff000000);
         if (titleLoaded) {
-          surface.drawImage(MenuGfx.TITLE, 0, 0);
+          surface.draw(MenuGfx.TITLE, 0, 0);
           surface.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x88000000);
         }
         renderLoadingProgress(surface);
@@ -125,9 +120,9 @@ public class Prospector extends SceneGame {
   }
 
   private void renderLoadingProgress(Surface surface) {
-    surface.drawText(MenuGfx.YELLOW_FONT, Toolkit.imagesLoadedDesc(), 8 * 3, 8 * 3);
-    surface.drawText(MenuGfx.YELLOW_FONT, Sounds.soundsLoadedDesc(), 8 * 3, 8 * 5);
-    surface.drawText(MenuGfx.YELLOW_FONT, Sounds.musicLoadedDesc(), 8 * 3, 8 * 7);
-    surface.drawText(MenuGfx.YELLOW_FONT, isMusicCancelled ? "Music cancelled" : "[Esc] to cancel music", 8 * 3, 8 * 9);
+    surface.drawText(MenuGfx.YELLOW_FONT, Loader.imageText(), 8 * 3, 8 * 3);
+    surface.drawText(MenuGfx.YELLOW_FONT, Loader.soundText(), 8 * 3, 8 * 5);
+    surface.drawText(MenuGfx.YELLOW_FONT, Loader.musicText(), 8 * 3, 8 * 7);
+    surface.drawText(MenuGfx.YELLOW_FONT, Sounds.music ? "[Esc] to cancel music" :  "Music cancelled", 8 * 3, 8 * 9);
   }
 }

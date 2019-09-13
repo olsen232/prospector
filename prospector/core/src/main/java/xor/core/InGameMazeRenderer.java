@@ -14,8 +14,8 @@ import java.awt.Graphics;
 public class InGameMazeRenderer extends BaseMazeRenderer {
 
   public final MazeState mazeState;
-  public final XorImage[] wallTiles;
-  public final XorImage[] floorTiles;
+  public final Image[] wallTiles;
+  public final Image[] floorTiles;
 
   public InGameMazeRenderer(MazeState mazeState) {
     this(mazeState,
@@ -23,7 +23,7 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
         Tiles.FLOOR_TILES[mazeState.maze().floorTheme]);
   }
 
-  public InGameMazeRenderer(MazeState mazeState, XorImage[] wallTiles, XorImage[] floorTiles) {
+  public InGameMazeRenderer(MazeState mazeState, Image[] wallTiles, Image[] floorTiles) {
     super(mazeState.maze());
     this.mazeState = mazeState;
     this.wallTiles = wallTiles;
@@ -75,8 +75,8 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
       case EXPLOSION:
         if (mazeState.isBorder(x, y)) return false;
         CellType cellType = mazeState.getActiveObjectType();
-        return Math.abs(x - mazeState.getActiveObjectX()) <= mazeState.getExplosionDx(cellType)
-            && Math.abs(y - mazeState.getActiveObjectY()) <= mazeState.getExplosionDy(cellType);
+        return Math.abs(x - mazeState.getActiveObjectX()) <= MazeState.getExplosionDx(cellType)
+            && Math.abs(y - mazeState.getActiveObjectY()) <= MazeState.getExplosionDy(cellType);
 
       default:
         return false;
@@ -98,11 +98,11 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
 
     if (mazeState.state() == State.SWITCHING_PLAYER) {
       Pose pose = percent < 50 ? Pose.UP : Pose.DOWN;
-      surface.drawSpriteTile(Sprites.PLAYERS_POSES[player.code][pose.code], x, y); 
+      surface.drawTile(Sprites.PLAYERS_POSES[player.code][pose.code], x, y); 
 
     } else if (player.isAlive() || player.state() == PlayerState.TELEPORTING) {
       Pose pose = player.pose(percent);
-      XorImage sprite = Sprites.PLAYERS_POSES[player.code][pose.code];
+      Image sprite = Sprites.PLAYERS_POSES[player.code][pose.code];
       surface.drawSlidingSpriteTile(sprite, x, y, player.movement(), percent);
 
     } else if (player.state() == PlayerState.DYING) {
@@ -118,7 +118,7 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
         x = mazeState.getActiveObjectX();
         y = mazeState.getActiveObjectY();
         CellType cellType = mazeState.getActiveObjectType();
-        XorImage sprite = Sprites.CELLS[cellType.code];
+        Image sprite = Sprites.CELLS[cellType.code];
 
         if (cellType == CellType.SPHERE && percent >= 25 && percent < 75) {
           RollDirection rd = mazeState.movement().isHorizontal() ? RollDirection.HORIZ : RollDirection.VERTI;
@@ -135,7 +135,7 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
         y = mazeState.getActiveObjectY();
         cellType = mazeState.getActiveObjectType();
         int frame = 2 + (Sprites.EXPLOSION.length - 2) * percent / 100;
-        surface.drawSpriteTile(Sprites.EXPLOSION[frame], x, y);
+        surface.drawTile(Sprites.EXPLOSION[frame], x, y);
         for (Direction d : MazeState.getExplosionDirections(cellType)) {
           surface.animateSpriteTile(Sprites.EXPLOSION, d.dx(x), d.dy(y), 1, percent);
         }
@@ -144,12 +144,12 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
   }
 
   @Override
-  protected XorImage[] getThemedFloorTiles() {
+  protected Image[] getThemedFloorTiles() {
     return floorTiles;
   }
 
   @Override
-  protected XorImage[] getThemedWallTiles() {
+  protected Image[] getThemedWallTiles() {
     return wallTiles;
   }
 }

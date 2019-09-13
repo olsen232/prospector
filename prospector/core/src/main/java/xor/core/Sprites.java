@@ -23,16 +23,18 @@ public final class Sprites {
 
   public static final int SPRITE_SIZE = 24;
 
-  public static final XorImage[] CELLS = new XorImage[Cells.NUM_CELL_TYPES];
-  public static final XorImage[] HERB_POSES = new XorImage[Player.NUM_POSES];
-  public static final XorImage[] PIP_POSES = new XorImage[Player.NUM_POSES];
-  public static final XorImage[] SPHERE_ROLL = new XorImage[NUM_ROLL_DIRECTIONS];
-  public static final XorImage[] ROCK_EYES = new XorImage[3];
-  public static final XorImage[] HERB_DYING = new XorImage[4];
-  public static final XorImage[] PIP_DYING = new XorImage[6];
-  public static final XorImage[] EXPLOSION = new XorImage[9];
+  public static Image SPRITES_RAW;
+  
+  public static final Image[] CELLS = new Image[Cells.NUM_CELL_TYPES];
+  public static final Image[] HERB_POSES = new Image[Player.NUM_POSES];
+  public static final Image[] PIP_POSES = new Image[Player.NUM_POSES];
+  public static final Image[] SPHERE_ROLL = new Image[NUM_ROLL_DIRECTIONS];
+  public static final Image[] ROCK_EYES = new Image[3];
+  public static final Image[] HERB_DYING = new Image[4];
+  public static final Image[] PIP_DYING = new Image[6];
+  public static final Image[] EXPLOSION = new Image[9];
 
-  private static final SplicedArrayList<XorImage> ALL_SPRITES = new SplicedArrayList<XorImage>()
+  private static final SplicedArrayList<Image> ALL_SPRITES = new SplicedArrayList<Image>()
       .add(CELLS)
       .add(HERB_POSES)
       .add(PIP_POSES)
@@ -42,11 +44,11 @@ public final class Sprites {
       .add(PIP_DYING)
       .add(EXPLOSION);
 
-  public static final XorImage[][] PLAYERS_POSES = new XorImage[][] {
+  public static final Image[][] PLAYERS_POSES = new Image[][] {
     HERB_POSES, PIP_POSES,
   };
 
-  public static final XorImage[][] PLAYERS_DYING = new XorImage[][] {
+  public static final Image[][] PLAYERS_DYING = new Image[][] {
     HERB_DYING, PIP_DYING,
   };
 
@@ -94,12 +96,12 @@ public final class Sprites {
     return ALL_SPRITES.indexOfElement(EXPLOSION, frame);
   }
 
-  public static void start() {
-    Toolkit.start("sprites.png");
+  public static void startLoading() {
+    SPRITES_RAW = Loader.loadImage("sprites.png");
   }
 
-  public static void load() {
-    XorImage[] spritesSource = Toolkit.tile(Toolkit.xorImage(Toolkit.get("sprites.png")), SPRITE_SIZE);
+  public static void finishLoading() {
+    Image[] spritesSource = SPRITES_RAW.tile(SPRITE_SIZE);
     for (int src = 0; src < SPRITE_SHEET.length; src++) {
       int dest = SPRITE_SHEET[src];
       if (dest >= 0 && dest < ALL_SPRITES.size()) {
@@ -133,9 +135,9 @@ public final class Sprites {
 
   private static void copyAndFlipLTR(int a, int b) {
     if (ALL_SPRITES.get(a) != null) {
-      ALL_SPRITES.set(b, Toolkit.flipLTR(ALL_SPRITES.get(a)));
+      ALL_SPRITES.set(b, ALL_SPRITES.get(a).flipLTR());
     } else {
-      ALL_SPRITES.set(a, Toolkit.flipLTR(ALL_SPRITES.get(b)));
+      ALL_SPRITES.set(a, ALL_SPRITES.get(b).flipLTR());
     }
   }
 

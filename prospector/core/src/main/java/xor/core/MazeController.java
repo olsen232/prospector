@@ -4,7 +4,6 @@ import static xor.core.PixelConstants.*;
 import xor.core.MazeState.AdditionalEvent;
 import xor.core.MazeState.State;
 
-import playn.core.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -239,7 +238,7 @@ public class MazeController {
     return mapRenderer.map();
   }
 
-  public XorImage stateIcon() {
+  public Image stateIcon() {
     return counterRenderer.stateIcon();
   }
 

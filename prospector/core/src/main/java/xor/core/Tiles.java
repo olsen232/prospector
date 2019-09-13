@@ -3,14 +3,13 @@ package xor.core;
 import static xor.core.Direction.*;
 import static xor.core.PixelConstants.TILE_SIZE;
 
-import playn.core.Image;
-
 public final class Tiles {
   private Tiles() {}
 
+  public static Image TILES_RAW;
   public static final int NUM_THEMES = 15;
-  public static final XorImage[][] FLOOR_TILES = new XorImage[NUM_THEMES][];
-  public static final XorImage[][] WALL_TILES = new XorImage[NUM_THEMES][];
+  public static final Image[][] FLOOR_TILES = new Image[NUM_THEMES][];
+  public static final Image[][] WALL_TILES = new Image[NUM_THEMES][];
 
   public static final String TEMPLATE =
       "    " +
@@ -22,19 +21,20 @@ public final class Tiles {
   public static final ByteGrid TEMPLATE_GRID =
       new ByteGrid(TEMPLATE.getBytes(), 4, 5);
 
-  public static void start() {
-    Toolkit.start("tiles.png");
+  public static void startLoading() {
+    TILES_RAW = Loader.loadImage("tiles.png");
   }
 
-  public static void load() {
-    Image[] themes = Toolkit.tile(Toolkit.get("tiles.png"), 4 * TILE_SIZE, 5 * TILE_SIZE + 1);
+  public static void finishLoading() {
+    Image[] themes = TILES_RAW.tile(4 * TILE_SIZE, 5 * TILE_SIZE + 1);
     for (int i = 0; i < NUM_THEMES; i++) {
-      FLOOR_TILES[i] = new XorImage[Cells.NUM_FLOOR_TYPES];
-      WALL_TILES[i] = new XorImage[Cells.NUM_WALL_TYPES];
+      FLOOR_TILES[i] = new Image[Cells.NUM_FLOOR_TYPES];
+      WALL_TILES[i] = new Image[Cells.NUM_WALL_TYPES];
 
-      XorImage xorTheme = Toolkit.xorImage(themes[i]);
-      if (i == 5) xorTheme = Toolkit.slow(xorTheme, 3);
-      XorImage[] themeTiles = Toolkit.tile(xorTheme, TILE_SIZE);
+      // TODO
+      //Image xorTheme = Toolkit.xorImage(themes[i]);
+      //if (i == 5) xorTheme = Toolkit.slow(xorTheme, 3);
+      Image[] themeTiles = themes[i].tile(TILE_SIZE);
 
       int floorType = 0;
       for (int j = 0; j < TEMPLATE.length(); j++) {

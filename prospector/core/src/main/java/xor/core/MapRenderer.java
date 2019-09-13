@@ -7,9 +7,6 @@ import xor.core.MazeState.AdditionalEvent;
 import xor.core.MazeState.MazeStateListener;
 import xor.core.MazeState.State;
 
-import playn.core.Image;
-import playn.core.Canvas;
-
 public class MapRenderer implements MazeStateListener {
 
   public static final int WALL_COLOR = 0xffeecc66;  // Was 0xffffdd77, added extra contrast.
@@ -76,9 +73,8 @@ public class MapRenderer implements MazeStateListener {
   }
 
   public void updateMap() {
-    Canvas canvas = Toolkit.createCanvas(MAP_SIZE, MAP_SIZE);
-    canvas.setFillColor(0xff000000);
-    canvas.fillRect(0, 0, MAP_SIZE, MAP_SIZE);
+    Canvas canvas = Platform.INSTANCE.createCanvas(MAP_SIZE, MAP_SIZE);
+    canvas.fillRect(0, 0, MAP_SIZE, MAP_SIZE, 0xff000000);
 
     int width = maze().width;
     int height = maze().height;
@@ -111,8 +107,7 @@ public class MapRenderer implements MazeStateListener {
         } else if (cellType == CellType.BALLOON) {
           color = BALLOON_COLOR;
         }
-        canvas.setFillColor(color);
-        canvas.fillRect((x + originX) * zoom, (y + originY) * zoom, zoom, zoom);
+        canvas.fillRect((x + originX) * zoom, (y + originY) * zoom, zoom, zoom, color);
       }
     }
   }

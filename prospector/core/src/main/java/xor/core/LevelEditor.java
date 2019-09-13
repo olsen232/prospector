@@ -3,8 +3,6 @@ package xor.core;
 import static xor.core.PixelConstants.*;
 import xor.core.Cells.CellType;
 
-import playn.core.Image;
-
 public class LevelEditor {
   private static final int[] VIEWPORT_SIZES = new int[]{8, 16, 32};
   public static final int MS_PER_MOVE = 100;
@@ -164,7 +162,7 @@ public class LevelEditor {
     }
   }
 
-  public XorImage stateIcon() {
+  public Image stateIcon() {
     CellType paintCellType = Cells.cellType(paintCell);
     if (paintCellType == CellType.EMPTY) {
       return getFloorTile(paintCell);
@@ -208,15 +206,15 @@ public class LevelEditor {
     return VIEWPORT_SIZES[viewportSizeIndex];
   }
 
-  private XorImage getFloorTile(int cell) {
+  private Image getFloorTile(int cell) {
     return Tiles.FLOOR_TILES[maze.floorTheme][Cells.floorType(cell)];
   }
 
-  private XorImage getWallTile(int cell) {
+  private Image getWallTile(int cell) {
     return Tiles.WALL_TILES[maze.wallTheme][Cells.wallType(cell)];
   }
 
-  private XorImage getSpriteTile(int cell) {
+  private Image getSpriteTile(int cell) {
     CellType cellType = Cells.cellType(cell);
     if (cellType == CellType.EMPTY || cellType == CellType.UNKNOWN) {
       return null;
@@ -289,12 +287,12 @@ public class LevelEditor {
     }
 
     @Override
-    protected XorImage[] getThemedFloorTiles() {
+    protected Image[] getThemedFloorTiles() {
       return mazeRenderer.getThemedFloorTiles();
     }
 
     @Override
-    protected XorImage[] getThemedWallTiles() {
+    protected Image[] getThemedWallTiles() {
       return mazeRenderer.getThemedWallTiles();
     }
   }

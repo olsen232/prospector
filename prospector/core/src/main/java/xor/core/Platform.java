@@ -32,7 +32,7 @@ public class Platform {
     return canvasCreator.create(pixelWidth, pixelHeight);
   }
   
-  //public Canvas createCanvas(int pixelWidth, int pixelHeight) {
-    //return new Canvas(canvasCreator.create(pixelWidth, pixelHeight));
-  //}
+  public Canvas createCanvas(int pixelWidth, int pixelHeight) {
+    return new Canvas(canvasCreator.create(pixelWidth, pixelHeight));
+  }
 }

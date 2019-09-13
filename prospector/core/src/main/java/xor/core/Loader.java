@@ -8,18 +8,18 @@ import java.util.Map;
 public final class Loader {
   private Loader() {}
   
-  private static Map<String, playn.core.Image> IMAGES = new HashMap<>();
+  private static Map<String, Image> IMAGES = new HashMap<>();
   private static Map<String, Sound> SOUNDS = new HashMap<>();
   private static Map<String, Sound> MUSICS = new HashMap<>();
   
-  /*public static Image loadImage(String name) {
+  public static Image loadImage(String name) {
     Image image = IMAGES.get(name);
     if (image == null) {
       image = new Image(Platform.INSTANCE.raw.assets().getImage(name));
       IMAGES.put(name, image);
     }
     return image;
-  }*/
+  }
   
   public static Sound loadSound(String name) {
     Sound sound = SOUNDS.get(name);
@@ -41,7 +41,7 @@ public final class Loader {
   
   public static String imageText() {
     int loaded = 0, total = 0;
-    for (playn.core.Image image : IMAGES.values()) {
+    for (Image image : IMAGES.values()) {
       loaded += image.isLoaded() ? 1 : 0;
       total += 1;
     }
@@ -67,15 +67,23 @@ public final class Loader {
     return "Music: " + loaded + " of " + total;
   }
   
-  public static String statusText() {
-    return imageText() + "\n\n" + soundText() + "\n\n" + musicText();
+  public static void setSoundVolume(float volume) {
+    for (Sound sound : SOUNDS.values()) {
+      sound.setVolume(volume);
+    }
   }
   
-  public static boolean isFinished() {
+  public static void setMusicVolume(float volume) {
+    for (Sound music : MUSICS.values()) {
+      music.setVolume(volume);
+    }
+  }
+  
+  public static boolean isLoaded() {
     if (IMAGES.size() == 0) {
       return false;
     }
-    for (playn.core.Image image : IMAGES.values()) {
+    for (Image image : IMAGES.values()) {
       if (!image.isLoaded()) {
         return false;
       }
@@ -85,6 +93,15 @@ public final class Loader {
         return false;
       }
     }
+    
+    if (!Sounds.music) return true;
+    
+    for (Sound music : MUSICS.values()) {
+      if (!music.isLoaded()) {
+        return false;
+      }
+    }
+    
     return true;
   }
 }

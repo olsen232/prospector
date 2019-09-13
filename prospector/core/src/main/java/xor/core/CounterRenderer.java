@@ -7,7 +7,6 @@ import xor.core.MazeState.AdditionalEvent;
 import xor.core.MazeState.MazeStateListener;
 import xor.core.MazeState.State;
 
-import playn.core.Image;
 public class CounterRenderer implements MazeStateListener {
 
   public final MazeState mazeState;
@@ -18,7 +17,7 @@ public class CounterRenderer implements MazeStateListener {
   private int deltaMoves = 0;
   private int deltaRequiredBalloons = 0;
 
-  private XorImage stateIcon = Sprites.ROCK_EYES[1];
+  private Image stateIcon = Sprites.ROCK_EYES[1];
   private int stateIconOffset = 0;
 
   public CounterRenderer(MazeState mazeState) {
@@ -60,15 +59,15 @@ public class CounterRenderer implements MazeStateListener {
     updateStateIcon();
   }
 
-  public void renderMoves(int percent, Surface xs) {
-    render(4, MOVES_DIAL_X, MOVES_DIAL_Y, moves, deltaMoves, percent, xs);
+  public void renderMoves(int percent, Surface surface) {
+    render(4, MOVES_DIAL_X, MOVES_DIAL_Y, moves, deltaMoves, percent, surface);
   }
 
-  public void renderBalloons(int percent, Surface xs) {
-    render(2, BALLOONS_DIAL_X, BALLOONS_DIAL_Y, requiredBalloons, deltaRequiredBalloons, percent, xs);
+  public void renderBalloons(int percent, Surface surface) {
+    render(2, BALLOONS_DIAL_X, BALLOONS_DIAL_Y, requiredBalloons, deltaRequiredBalloons, percent, surface);
   }
 
-  public XorImage stateIcon() {
+  public Image stateIcon() {
     return stateIcon;
   }
 
@@ -76,9 +75,9 @@ public class CounterRenderer implements MazeStateListener {
     return stateIconOffset;
   }
 
-  private void render(int numDigits, int x, int y, int start, int delta, int percent, Surface xs) {
+  private void render(int numDigits, int x, int y, int start, int delta, int percent, Surface surface) {
     x += DIAL_WIDTH * (numDigits - 1);
-    int spriteVariant = xs.spriteVariant;
+    int spriteVariant = surface.spriteVariant;
 
     int end = start + delta;
     if (delta < 0) {
@@ -93,25 +92,28 @@ public class CounterRenderer implements MazeStateListener {
       int endDigit = end % 10;
 
       if (startDigit == endDigit) {
-        xs.spriteVariant = i + startDigit;
-        xs.drawImage(MenuGfx.DIGITS[startDigit], x + DIGIT_X, y + DIGIT_Y);
-        xs.drawSpriteImage(MenuGfx.GEARS, x + GEAR_X, y + GEAR_Y);
+        surface.spriteVariant = i + startDigit;
+        surface.draw(MenuGfx.DIGITS[startDigit], x + DIGIT_X, y + DIGIT_Y);
+        // drawSpriteImage
+        surface.draw(MenuGfx.GEARS, x + GEAR_X, y + GEAR_Y);
 
       } else {
-        xs.spriteVariant = i + startDigit + spriteVariant;
-        xs.startClipped(x, y + 7, DIAL_WIDTH, DIAL_HEIGHT - 7);
-        xs.drawImage(MenuGfx.DIGITS[startDigit], x + DIGIT_X, y + DIGIT_Y - yDelta);
-        xs.drawImage(MenuGfx.DIGITS[endDigit], x + DIGIT_X, y + DIAL_HEIGHT + DIGIT_Y - yDelta);
-        xs.endClipped();
+        surface.spriteVariant = i + startDigit + spriteVariant;
+        surface.startClipped(x, y + 7, DIAL_WIDTH, DIAL_HEIGHT - 7);
+        surface.draw(MenuGfx.DIGITS[startDigit], x + DIGIT_X, y + DIGIT_Y - yDelta);
+        surface.draw(MenuGfx.DIGITS[endDigit], x + DIGIT_X, y + DIAL_HEIGHT + DIGIT_Y - yDelta);
+        surface.endClipped();
 
-        xs.drawSpriteImage(MenuGfx.GEARS, x + GEAR_X, y + GEAR_Y);
+        // drawSpriteImage
+        // TODO
+        surface.draw(MenuGfx.GEARS, x + GEAR_X, y + GEAR_Y);
       }
       start /= 10;
       end /= 10;
       x -= DIAL_WIDTH;
     }
 
-    xs.spriteVariant = spriteVariant;
+    surface.spriteVariant = spriteVariant;
   }
 
   private void updateStateIcon() {

@@ -4,8 +4,6 @@ import static xor.core.PixelConstants.FONT_SIZE;
 import static xor.core.PixelConstants.TILE_SIZE;
 import static xor.core.PixelConstants.ZOOM;
 
-import playn.core.Image;
-
 public class Surface {
 
   public final playn.core.Surface raw;
@@ -52,68 +50,45 @@ public class Surface {
   }
 
   public void draw(Image image, int x, int y) {
-    if (image != null) {
-      raw.draw(image.texture(), x, y);
-    }
+    if (image == null) return;
+    Platform.INSTANCE.pixelate();
+    raw.draw(image.raw().texture(), x, y);
+    Platform.INSTANCE.pixelate();
   }
 
-  public void drawImage(XorImage image, int x, int y) {
-    if (image != null) {
-      Platform.INSTANCE.pixelate();
-      draw(image.variant(0), x, y);
-      Platform.INSTANCE.pixelate();
-    }
+  public void drawTile(Image tile, int x, int y) {
+    draw(tile, x * TILE_SIZE, y * TILE_SIZE);
   }
 
-  public void drawSpriteImage(XorImage image, int x, int y) {
-    if (image != null) {
-      draw(image.variant(spriteVariant), x, y);
-    }
-  }
-
-  public void drawMapImage(XorImage image, int x, int y) {
-    if (image != null) {
-      draw(image.variant(mapVariant), x, y);
-    }
-  }
-
-  public void drawMapTile(XorImage tile, int x, int y) {
-    drawMapImage(tile, x * TILE_SIZE, y * TILE_SIZE);
-  }
-
-  public void drawSpriteTile(XorImage tile, int x, int y) {
-    drawSpriteImage(tile, x * TILE_SIZE, y * TILE_SIZE);
-  }
-
-  public void animateSpriteTile(XorImage[] animation, int x, int y, int repeats, int percent) {
+  public void animateSpriteTile(Image[] animation, int x, int y, int repeats, int percent) {
     if (animation == null) return;
     int frame = (animation.length * repeats * percent / 100) % animation.length;
-    drawSpriteTile(animation[frame], x, y);
+    drawTile(animation[frame], x, y);
   }
 
-  public void drawSlidingSpriteTile(XorImage tile, int x, int y, Direction movement, int percent) {
+  public void drawSlidingSpriteTile(Image tile, int x, int y, Direction movement, int percent) {
     if (tile == null) return;
     if (movement == null) {
-      drawSpriteTile(tile, x, y);
+      drawTile(tile, x, y);
     } else {
       int px = movement.tweenX(x * TILE_SIZE, percent, TILE_SIZE);
       int py = movement.tweenY(y * TILE_SIZE, percent, TILE_SIZE);
-      drawSpriteImage(tile, px, py);
+      draw(tile, px, py);
     }
   }
 
-  public void drawText(XorImage[] font, String text, int x, int y) {
+  public void drawText(Image[] font, String text, int x, int y) {
     for (int i = 0; i < text.length(); i++) {
       char c = text.charAt(i);
       int index = (int) (c - ' ');
       if (index >= 0 && index < font.length) {
-        drawImage(font[index], x, y);
+        draw(font[index], x, y);
         x += FONT_SIZE;
       }
     }
   }
 
-  public void drawTextWithNewLines(XorImage[] font, String text, int x, int y) {
+  public void drawTextWithNewLines(Image[] font, String text, int x, int y) {
     String[] lines = text.split("\n");
     for (String line : lines) {
       drawText(font, line, x, y);
@@ -121,11 +96,11 @@ public class Surface {
     }
   }
 
-  public void drawCenteredText(XorImage[] font, String text, int x, int y) {
+  public void drawCenteredText(Image[] font, String text, int x, int y) {
     drawText(font, text, x - (text.length() * FONT_SIZE / 2), y - (FONT_SIZE / 2));
   }
 
-  public void drawTextBox(XorImage[] font, String text, int x, int y, int w, int h, int color) {
+  public void drawTextBox(Image[] font, String text, int x, int y, int w, int h, int color) {
     String[] lines = text.split("\n");
     fillRect(x, y, w, h, 0xff000000);
     drawRect(x, y, w, h, color);
