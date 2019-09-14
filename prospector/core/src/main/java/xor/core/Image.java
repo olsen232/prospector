@@ -1,11 +1,18 @@
 package xor.core;
 
-public class Image {
+public class Image implements LoadTracker.Loadable {
+  public static final LoadTracker LOAD_TRACKER = new LoadTracker();
 
   public final playn.core.Image raw;
 
   public Image(playn.core.Image raw) {
     this.raw = raw;
+  }
+  
+  public static Image load(String name) {
+    Image result = new Image(Platform.INSTANCE.raw.assets().getImage(name));
+    LOAD_TRACKER.add(result);
+    return result;
   }
 
   public playn.core.Image raw() {

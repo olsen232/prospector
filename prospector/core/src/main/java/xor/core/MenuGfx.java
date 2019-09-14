@@ -10,27 +10,15 @@ public final class MenuGfx {
   public static final int TRANSLUCENT_BROWN = 0x77772200;
 
   public static Image TITLE;
-
-  public static Image FONT_RAW;
-  public static Image[] WHITE_FONT;
-  public static Image[] YELLOW_FONT;
-  public static Image[] BROWN_FONT;
   public static Image DIGITS_RAW;
   public static Image[] DIGITS;
   public static Image GEARS;
   public static Image EDITOR_BUTTONS;
 
   public static void startLoading() {
-    FONT_RAW = Loader.loadImage("widefont.png");
-    TITLE = Loader.loadImage("title.png");
-    DIGITS_RAW = Loader.loadImage("digits.png");
-    EDITOR_BUTTONS = Loader.loadImage("editorbuttons.png");
-  }
-
-  public static void finishLoadingFont() {
-    WHITE_FONT = FONT_RAW.tile(FONT_SIZE);
-    YELLOW_FONT = FONT_RAW.recolor(YELLOW).tile(FONT_SIZE);
-    BROWN_FONT = FONT_RAW.recolor(BROWN).tile(FONT_SIZE);
+    TITLE = Image.load("title.png");
+    DIGITS_RAW = Image.load("digits.png");
+    EDITOR_BUTTONS = Image.load("editorbuttons.png");
   }
 
   public static void finishLoading() {

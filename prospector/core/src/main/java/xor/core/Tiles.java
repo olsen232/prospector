@@ -22,7 +22,7 @@ public final class Tiles {
       new ByteGrid(TEMPLATE.getBytes(), 4, 5);
 
   public static void startLoading() {
-    TILES_RAW = Loader.loadImage("tiles.png");
+    TILES_RAW = Image.load("tiles.png");
   }
 
   public static void finishLoading() {

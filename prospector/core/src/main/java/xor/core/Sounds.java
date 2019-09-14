@@ -4,11 +4,6 @@ import xor.core.MazeState.AdditionalEvent;
 import xor.core.MazeState.MazeStateListener;
 import xor.core.MazeState.State;
 
-import java.util.Map;
-import java.util.HashMap;
-import playn.core.Platform;
-import playn.core.Sound;
-
 public final class Sounds {
   private Sounds() {}
 
@@ -22,15 +17,15 @@ public final class Sounds {
   public static Sound PARTITURE;
 
   public static void startLoading() {
-    EXPLOSION = Loader.loadSound("explosion");
-    TELEPORT = Loader.loadSound("explosion");
-    DYING = Loader.loadSound("explosion");
-    CONGRATULATIONS = Loader.loadSound("explosion");
-    BALLOON = Loader.loadSound("explosion");
-    MAP = Loader.loadSound("map");
-    THUMP = Loader.loadSound("thump");
+    EXPLOSION = Sound.load("explosion");
+    TELEPORT = Sound.load("teleport");
+    DYING = Sound.load("dying");
+    CONGRATULATIONS = Sound.load("congratulations");
+    BALLOON = Sound.load("balloon");
+    MAP = Sound.load("map");
+    THUMP = Sound.load("thump");
     
-    PARTITURE = Loader.loadMusic("partiture");
+    PARTITURE = Sound.loadMusic("partiture");
   }
 
   public static boolean isMusicLoaded() {
@@ -47,9 +42,6 @@ public final class Sounds {
     addSound(AdditionalEvent.BALLOON_COLLECTED, BALLOON);
     addSound(AdditionalEvent.MAP_COLLECTED, MAP);
     addSound(AdditionalEvent.OBJECT_STOPPED, THUMP);
-
-    Loader.setSoundVolume(0.25f);
-    Loader.setMusicVolume(0.25f);
   }
 
   private static void addSound(State state, Sound sound) {

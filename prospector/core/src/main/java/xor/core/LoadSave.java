@@ -78,19 +78,19 @@ public final class LoadSave {
       baos.write(replay.getBytes(), 0, replay.length());
     }
     if (customLevel != null && customLevel.title().equals(levelName)) {
-      loaded.selectedList = -1;
-      loaded.selectedIndex = -1;
+      loaded.selectedList = null;
+      loaded.mazeIndex = -1;
       loaded.replay = baos;
     }
 
     for (int i = 0; i < 15; i++) {
       if (left.entries[i].maze.title().equals(levelName)) {
-        loaded.selectedList = 0;
-        loaded.selectedIndex = i;
+        loaded.selectedList = Direction.LEFT;
+        loaded.mazeIndex = i;
         loaded.replay = baos;
       } else if (right.entries[i].maze.title().equals(levelName)) {
-        loaded.selectedList = 2;
-        loaded.selectedIndex = i;
+        loaded.selectedList = Direction.RIGHT;
+        loaded.mazeIndex = i;
         loaded.replay = baos;
       }
     }
@@ -119,8 +119,8 @@ public final class LoadSave {
   }
 
   public static class Loaded {
-    public int selectedList;
-    public int selectedIndex;
+    public Direction selectedList;
+    public int mazeIndex;
     public Maze customLevel;
     public ByteArrayOutputStream replay;
   }

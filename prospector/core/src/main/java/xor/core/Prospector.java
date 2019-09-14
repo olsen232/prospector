@@ -19,7 +19,6 @@ public class Prospector extends SceneGame {
   private boolean loadingFinished = false;
   private boolean titleLoaded = false;
   private boolean fontLoaded = false;
-  private boolean isMusicCancelled = false;
 
   public Prospector(Platform platform) {
     super(platform.raw, FRAME_MS);
@@ -27,6 +26,7 @@ public class Prospector extends SceneGame {
     surface.scaleFactor = platform.raw.graphics().scale().factor;
 
     MenuGfx.startLoading();
+    Font.startLoading();
     Tiles.startLoading();
     Sprites.startLoading();
     Sounds.startLoading();
@@ -35,28 +35,10 @@ public class Prospector extends SceneGame {
     controlState = new ControlState();
 
     plat.input().keyboardEnabled = true;
-    plat.input().keyboardEvents.connect(new Slot<Keyboard.Event>() {
-      public void onEmit(Keyboard.Event e) {
-	if (e instanceof Keyboard.KeyEvent) {
-	  Keyboard.KeyEvent ke = (Keyboard.KeyEvent) e;
-          controlState.onKeyChange(ke.key, ke.down);
-          if (!loadingFinished && ke.key == playn.core.Key.ESCAPE) {
-            Sounds.music = false;
-          }
-        }
-      }
-    });
+    plat.input().keyboardEvents.connect(keySlot);
 
     plat.input().mouseEnabled = true;
-    plat.input().mouseEvents.connect(new Slot<Mouse.Event>() {
-      public void onEmit(Mouse.Event e) {
-	if (e instanceof Mouse.ButtonEvent) {
-          controlState.onMouseChange((int) e.x, (int) e.y, ((Mouse.ButtonEvent) e).down);
-	} else if (controlState.isMousePressed()) {
-          controlState.onMouseDragged((int) e.x, (int) e.y);
-        }
-      }
-    });
+    plat.input().mouseEvents.connect(mouseSlot);
   }
 
   @Override
@@ -64,15 +46,18 @@ public class Prospector extends SceneGame {
     if (loadingFinished) {
       menu.tick(FRAME_MS);
 
-    } else if (!fontLoaded && MenuGfx.FONT_RAW.isLoaded()) {
-      MenuGfx.finishLoadingFont();
+    } else if (!fontLoaded && Font.RAW.isLoaded()) {
+      Font.finishLoading();
       fontLoaded = true;
 
     } else if (!titleLoaded && MenuGfx.TITLE.isLoaded()) {
       MenuGfx.finishLoading();
       titleLoaded = true;
 
-    } else if (Loader.isLoaded() && Mazes.isLoaded()) {
+    } else if (Image.LOAD_TRACKER.isLoaded() &&
+               Sound.LOAD_TRACKER.isLoaded() &&
+               (Sounds.music ? Sound.MUSIC_LOAD_TRACKER.isLoaded() : true) &&
+               Mazes.isLoaded()) {
       Tiles.finishLoading();
       Sprites.finishLoading();
       Sounds.finishLoading();
@@ -81,7 +66,7 @@ public class Prospector extends SceneGame {
       Menu.INSTANCE = menu = new Menu(controlState, Mazes.XOR_MAZES, Mazes.PROCYON_MAZES);
 
       controlState.clearFresh();
-      if (!isMusicCancelled) {
+      if (Sounds.music) {
         Sounds.PARTITURE.play();
       }
       loadingFinished = true;
@@ -120,9 +105,31 @@ public class Prospector extends SceneGame {
   }
 
   private void renderLoadingProgress(Surface surface) {
-    surface.drawText(MenuGfx.YELLOW_FONT, Loader.imageText(), 8 * 3, 8 * 3);
-    surface.drawText(MenuGfx.YELLOW_FONT, Loader.soundText(), 8 * 3, 8 * 5);
-    surface.drawText(MenuGfx.YELLOW_FONT, Loader.musicText(), 8 * 3, 8 * 7);
-    surface.drawText(MenuGfx.YELLOW_FONT, Sounds.music ? "[Esc] to cancel music" :  "Music cancelled", 8 * 3, 8 * 9);
+    Font.YELLOW.singleLine(surface, "Images: " + Image.LOAD_TRACKER.text(), 8 * 3, 8 * 3);
+    Font.YELLOW.singleLine(surface, "Sounds: " + Sound.LOAD_TRACKER.text(), 8 * 3, 8 * 5);
+    Font.YELLOW.singleLine(surface, "Music: " + Sound.MUSIC_LOAD_TRACKER.text(), 8 * 3, 8 * 7);
+    Font.YELLOW.singleLine(surface, Sounds.music ? "[Esc] to cancel music" :  "Music cancelled", 8 * 3, 8 * 9);
   }
+  
+  private Slot<Keyboard.Event> keySlot = new Slot<Keyboard.Event>() {
+    public void onEmit(Keyboard.Event e) {
+	  if (e instanceof Keyboard.KeyEvent) {
+	    Keyboard.KeyEvent ke = (Keyboard.KeyEvent) e;
+        controlState.onKeyChange(ke.key, ke.down);
+        if (!loadingFinished && ke.key == playn.core.Key.ESCAPE) {
+          Sounds.music = false;
+        }
+      }
+    }
+  };
+  
+  private Slot<Mouse.Event> mouseSlot = new Slot<Mouse.Event>() {
+    public void onEmit(Mouse.Event e) {
+	  if (e instanceof Mouse.ButtonEvent) {
+        controlState.onMouseChange((int) e.x, (int) e.y, ((Mouse.ButtonEvent) e).down);
+      } else if (controlState.isMousePressed()) {
+        controlState.onMouseDragged((int) e.x, (int) e.y);
+      }
+    }
+  };
 }

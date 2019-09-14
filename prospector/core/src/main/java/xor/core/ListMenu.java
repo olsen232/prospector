@@ -34,14 +34,14 @@ public class ListMenu {
   public void render(Surface surface) {
     for (int i = 0; i < NUM_LEVELS_PER_SCREEN; i++) {
       int entryIndex = i + startIndex;
-      Image[] font = (entryIndex == selectedIndex) ? MenuGfx.WHITE_FONT : MenuGfx.YELLOW_FONT;
-      surface.drawText(font, entries[entryIndex].rowText, START_X, START_Y + i * (FONT_SIZE + LINE_SPACE));
+      Font font = (entryIndex == selectedIndex) ? Font.WHITE : Font.YELLOW;
+      font.singleLine(surface, entries[entryIndex].rowText, START_X, START_Y + i * (FONT_SIZE + LINE_SPACE));
     }
-    surface.drawTextBox(MenuGfx.BROWN_FONT, listTitle, FOOTER_X, FOOTER_Y, FOOTER_WIDTH, FOOTER_HEIGHT, MenuGfx.BROWN);
+    surface.drawTextBox(Font.BROWN, listTitle, FOOTER_X, FOOTER_Y, FOOTER_WIDTH, FOOTER_HEIGHT, MenuGfx.BROWN);
     if (back == Direction.LEFT) {
-      surface.drawTextBox(MenuGfx.BROWN_FONT, "<", 2, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
+      surface.drawTextBox(Font.BROWN, "<", 2, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
     } else if (back == Direction.RIGHT) {
-      surface.drawTextBox(MenuGfx.BROWN_FONT, ">", 172, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
+      surface.drawTextBox(Font.BROWN, ">", 172, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
     }
   }
 

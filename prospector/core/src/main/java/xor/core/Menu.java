@@ -11,8 +11,9 @@ public class Menu {
 
   private static final int INTRO_TIMEOUT_MS = 10000;
 
-  private ListMenu[] lists;
-  private int activeListIndex;
+  private ListMenu leftList;
+  private ListMenu rightList;
+  private Direction selectedList;
   private ControlState controlState;
   private MazeController mazeController = new MazeController();
 
@@ -26,11 +27,8 @@ public class Menu {
 
   public Menu(ControlState controlState, List<Maze> xorMaxes, List<Maze> procyonMazes) {
     this.controlState = controlState;
-    this.lists = new ListMenu[] {
-      new ListMenu("Mazes of Xor", xorMaxes, Direction.RIGHT),
-      null,
-      new ListMenu("Mazes of Procyon", procyonMazes, Direction.LEFT),
-    };
+    this.leftList = new ListMenu("Mazes of Xor", xorMaxes, Direction.RIGHT);
+    this.rightList = new ListMenu("Mazes of Procyon", procyonMazes, Direction.LEFT);
     this.levelEditor = new LevelEditor(LevelEditor.defaultEditorMaze(), controlState);
   }
 
@@ -55,7 +53,7 @@ public class Menu {
     if (c != null && activeList() != null) {
       if (c == Control.OK) {
         mazeController = new MazeController(activeList().selected(), controlState,
-            new HighscoreCallback(activeListIndex, activeList().selectedIndex()));
+            new HighscoreCallback(selectedList, activeList().selectedIndex()));
         mazeController.reset();
       } else if (c.direction.isVertical()) {
         activeList().upOrDown(c.direction);
@@ -63,36 +61,38 @@ public class Menu {
     }
 
     if (c != null && c.direction != null && c.direction.isHorizontal()) {
-      activeListIndex = Ints.clamp(c.direction.dx(activeListIndex), 0, 2);
+      if (selectedList == null) selectedList = c.direction;
+      else if (selectedList == c.direction.opposite()) selectedList = null;
       menuMs = 0;
     }
 
-    if (controlState.isFresh(ExtraControl.BACK) && activeListIndex != 1) {
-      activeListIndex = 1;
+    if (controlState.isFresh(ExtraControl.BACK) && selectedList != null) {
+      selectedList = null;
+      menuMs = 0;
     }
 
-    if (activeListIndex == 1) {
+    if (selectedList == null) {
       if (controlState.isFreshClickInsideViewport(0, 40, 96, 40)) {
-        activeListIndex = 0;
+        selectedList = Direction.LEFT;
       } else if (controlState.isFreshClickInsideViewport(96, 40, 96, 40)) {
-        activeListIndex = 2;
+        selectedList = Direction.RIGHT;
       } else if (controlState.isFreshClickInsideViewport(8, 134, 84, 20)) {
-        loadSave = LoadSave.save(lists[0], lists[2], mazeController, levelEditor.customMazeOrNull());
+        loadSave = LoadSave.save(leftList, rightList, mazeController, levelEditor.customMazeOrNull());
       } else if (controlState.isFreshClickInsideViewport(99, 134, 84, 20)) {
         levelEditor.setActive(true);
       }
     } else if (activeList().isMazeClicked(controlState)) {
       mazeController = new MazeController(activeList().selected(), controlState,
-          new HighscoreCallback(activeListIndex, activeList().selectedIndex()));
+          new HighscoreCallback(selectedList, activeList().selectedIndex()));
       mazeController.reset();
     } else if (activeList().isBackClicked(controlState)) {
-      activeListIndex = 1;
+      selectedList = null;
     }
   }
 
   public void load(String s) {
     loadSave = false;
-    Loaded loaded = LoadSave.load(s, lists[0], lists[2]);
+    Loaded loaded = LoadSave.load(s, leftList, rightList);
     if (loaded == null) {
       return;
     }
@@ -100,15 +100,15 @@ public class Menu {
       levelEditor = new LevelEditor(loaded.customLevel, controlState);
       levelEditor.setActive(true);
     }
-    if (loaded.replay != null && loaded.selectedList == -1) {
-      mazeController = new MazeController(loaded.customLevel, controlState, null);
-      mazeController.movesOut = loaded.replay;
-      mazeController.startReplay();
-    } else if (loaded.replay != null) {
-      activeListIndex = loaded.selectedList;
-      activeList().setSelectedIndex(loaded.selectedIndex);
-      mazeController = new MazeController(activeList().selected(), controlState,
-          new HighscoreCallback(activeListIndex, activeList().selectedIndex()));
+    if (loaded.replay != null) {
+      if (loaded.selectedList != null) {
+        selectedList = loaded.selectedList;
+        activeList().setSelectedIndex(loaded.mazeIndex);
+        mazeController = new MazeController(activeList().selected(), controlState,
+            new HighscoreCallback(selectedList, activeList().selectedIndex()));  
+      } else {
+        mazeController = new MazeController(loaded.customLevel, controlState, null);
+      }
       mazeController.movesOut = loaded.replay;
       mazeController.startReplay();
     }
@@ -170,7 +170,9 @@ public class Menu {
   }
 
   private ListMenu activeList() {
-    return lists[activeListIndex];
+    if (selectedList == Direction.LEFT) return leftList;
+    else if (selectedList == Direction.RIGHT) return rightList;
+    return null;
   }
 
   public void renderAll(Surface surface, int ms) {
@@ -230,22 +232,22 @@ public class Menu {
   }
 
   private void renderMainMenu(Surface surface) {
-    surface.drawCenteredText(MenuGfx.BROWN_FONT, "Guide the Prospectors", 96, 12);
-    surface.drawCenteredText(MenuGfx.BROWN_FONT, "through the", 96, 24);
-    surface.drawTextBox(MenuGfx.BROWN_FONT, "Mazes\nof Xor", 8, 40, 84, 40, MenuGfx.BROWN);
-    surface.drawTextBox(MenuGfx.BROWN_FONT, "Mazes of\nProcyon", 99, 40, 84, 40, MenuGfx.BROWN);
-    surface.drawTextBox(MenuGfx.WHITE_FONT, "<", 2, 52, 15, 15, MenuGfx.BROWN);
-    surface.drawTextBox(MenuGfx.WHITE_FONT, ">", 174, 52, 15, 15, MenuGfx.BROWN);
+    Font.BROWN.centeredSingleLine(surface, "Guide the Prospectors", 96, 12);
+    Font.BROWN.centeredSingleLine(surface, "through the", 96, 24);
+    surface.drawTextBox(Font.BROWN, "Mazes\nof Xor", 8, 40, 84, 40, MenuGfx.BROWN);
+    surface.drawTextBox(Font.BROWN, "Mazes of\nProcyon", 99, 40, 84, 40, MenuGfx.BROWN);
+    surface.drawTextBox(Font.WHITE, "<", 2, 52, 15, 15, MenuGfx.BROWN);
+    surface.drawTextBox(Font.WHITE, ">", 174, 52, 15, 15, MenuGfx.BROWN);
 
     int tip = Ints.modulo(menuMs / 5000, TIP_SPRITES.length);
     surface.draw(Sprites.CELLS[TIP_SPRITES[tip].code], 8, 96);
-    surface.drawTextBox(MenuGfx.BROWN_FONT, TIP_TEXT[tip], 34, 98, 152, 20, 0);
+    surface.drawTextBox(Font.BROWN, TIP_TEXT[tip], 34, 98, 152, 20, 0);
 
-    surface.drawTextBox(MenuGfx.BROWN_FONT, "Load/Save", 8, 134, 84, 20, MenuGfx.BROWN);
-    surface.drawTextBox(MenuGfx.BROWN_FONT, "Level\nEditor", 99, 134, 84, 20, MenuGfx.BROWN);
+    surface.drawTextBox(Font.BROWN, "Load/Save", 8, 134, 84, 20, MenuGfx.BROWN);
+    surface.drawTextBox(Font.BROWN, "Level\nEditor", 99, 134, 84, 20, MenuGfx.BROWN);
 
     int credit = Ints.modulo((menuMs - 2500) / 5000, CREDITS_TEXT.length);
-    surface.drawTextWithNewLines(MenuGfx.BROWN_FONT, CREDITS_TEXT[credit], 8, 164);
+    Font.BROWN.leftAligned(surface, CREDITS_TEXT[credit], 8, 164);
   }
 
   private static final CellType[] TIP_SPRITES = new CellType[] {
@@ -281,10 +283,10 @@ public class Menu {
   };
 
   private class HighscoreCallback implements MazeController.GameOverCallback {
-    private final int listIndex;
+    private final Direction selectList;
     private final int mazeIndex;
-    HighscoreCallback(int listIndex, int mazeIndex) {
-      this.listIndex = listIndex;
+    HighscoreCallback(Direction selectList, int mazeIndex) {
+      this.selectList = selectList;
       this.mazeIndex = mazeIndex;
     }
 
@@ -294,7 +296,7 @@ public class Menu {
     }
 
     public void selectMaze() {
-      activeListIndex = listIndex;
+      selectedList = selectList;
       activeList().setSelectedIndex(mazeIndex);
     }
   }

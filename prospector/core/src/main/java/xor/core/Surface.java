@@ -77,7 +77,7 @@ public class Surface {
     }
   }
 
-  public void drawText(Image[] font, String text, int x, int y) {
+  /*public void drawText(Image[] font, String text, int x, int y) {
     for (int i = 0; i < text.length(); i++) {
       char c = text.charAt(i);
       int index = (int) (c - ' ');
@@ -98,16 +98,16 @@ public class Surface {
 
   public void drawCenteredText(Image[] font, String text, int x, int y) {
     drawText(font, text, x - (text.length() * FONT_SIZE / 2), y - (FONT_SIZE / 2));
-  }
+  }*/
 
-  public void drawTextBox(Image[] font, String text, int x, int y, int w, int h, int color) {
+  public void drawTextBox(Font font, String text, int x, int y, int w, int h, int color) {
     String[] lines = text.split("\n");
     fillRect(x, y, w, h, 0xff000000);
     drawRect(x, y, w, h, color);
     x = x + ((w + 1)/2);
     y = y + ((h + 1)/2) - (lines.length * FONT_SIZE / 2) + (FONT_SIZE / 2); 
     for (int l = 0; l < lines.length; l++) {
-      drawCenteredText(font, lines[l], x, y);
+      font.centeredSingleLine(this, lines[l], x, y);
       y += FONT_SIZE;
     }
   }

@@ -97,7 +97,7 @@ public final class Sprites {
   }
 
   public static void startLoading() {
-    SPRITES_RAW = Loader.loadImage("sprites.png");
+    SPRITES_RAW = Image.load("sprites.png");
   }
 
   public static void finishLoading() {

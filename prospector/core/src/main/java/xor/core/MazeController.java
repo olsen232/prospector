@@ -229,7 +229,7 @@ public class MazeController {
 
   public void renderDialog(Surface surface) {
     if (dialogText() != null) {
-      surface.drawTextBox(MenuGfx.BROWN_FONT, dialogText(), DIALOG_X, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT, MenuGfx.BROWN);
+      surface.drawTextBox(Font.BROWN, dialogText(), DIALOG_X, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT, MenuGfx.BROWN);
     }
   }
 
