@@ -77,7 +77,6 @@ public class CounterRenderer implements MazeStateListener {
 
   private void render(int numDigits, int x, int y, int start, int delta, int percent, Surface surface) {
     x += DIAL_WIDTH * (numDigits - 1);
-    int spriteVariant = surface.spriteVariant;
 
     int end = start + delta;
     if (delta < 0) {
@@ -92,28 +91,23 @@ public class CounterRenderer implements MazeStateListener {
       int endDigit = end % 10;
 
       if (startDigit == endDigit) {
-        surface.spriteVariant = i + startDigit;
         surface.draw(MenuGfx.DIGITS[startDigit], x + DIGIT_X, y + DIGIT_Y);
-        // drawSpriteImage
-        surface.draw(MenuGfx.GEARS, x + GEAR_X, y + GEAR_Y);
+        int gear = (i + startDigit) % MenuGfx.GEARS.length;
+        surface.draw(MenuGfx.GEARS[gear], x + GEAR_X, y + GEAR_Y);
 
       } else {
-        surface.spriteVariant = i + startDigit + spriteVariant;
         surface.startClipped(x, y + 7, DIAL_WIDTH, DIAL_HEIGHT - 7);
         surface.draw(MenuGfx.DIGITS[startDigit], x + DIGIT_X, y + DIGIT_Y - yDelta);
         surface.draw(MenuGfx.DIGITS[endDigit], x + DIGIT_X, y + DIAL_HEIGHT + DIGIT_Y - yDelta);
         surface.endClipped();
 
-        // drawSpriteImage
-        // TODO
-        surface.draw(MenuGfx.GEARS, x + GEAR_X, y + GEAR_Y);
+        int gear = (i + startDigit + Animator.SPRITE.signal) % MenuGfx.GEARS.length;
+        surface.draw(MenuGfx.GEARS[gear], x + GEAR_X, y + GEAR_Y);
       }
       start /= 10;
       end /= 10;
       x -= DIAL_WIDTH;
     }
-
-    surface.spriteVariant = spriteVariant;
   }
 
   private void updateStateIcon() {

@@ -31,10 +31,8 @@ public final class Tiles {
       FLOOR_TILES[i] = new Image[Cells.NUM_FLOOR_TYPES];
       WALL_TILES[i] = new Image[Cells.NUM_WALL_TYPES];
 
-      // TODO
-      //Image xorTheme = Toolkit.xorImage(themes[i]);
-      //if (i == 5) xorTheme = Toolkit.slow(xorTheme, 3);
-      Image[] themeTiles = themes[i].tile(TILE_SIZE);
+      Animator animator = (i == 5) ? Animator.MAP_SLOW : Animator.MAP;
+      Image[] themeTiles = themes[i].cycle(animator).tile(TILE_SIZE);
 
       int floorType = 0;
       for (int j = 0; j < TEMPLATE.length(); j++) {

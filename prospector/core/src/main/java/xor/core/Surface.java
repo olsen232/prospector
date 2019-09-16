@@ -7,17 +7,10 @@ import static xor.core.PixelConstants.ZOOM;
 public class Surface {
 
   public final playn.core.Surface raw;
-  public int mapVariant = 0;
-  public int spriteVariant = 0;
   public float scaleFactor = 1;
 
   public Surface(playn.core.Surface raw) {
     this.raw = raw;
-  }
-
-  public void setVariants(int frame, int msPerFrame) {
-    mapVariant = mapVariant(frame, msPerFrame);
-    spriteVariant = spriteVariant(frame, msPerFrame);
   }
   
   public void begin() { raw.begin(); }
@@ -77,29 +70,6 @@ public class Surface {
     }
   }
 
-  /*public void drawText(Image[] font, String text, int x, int y) {
-    for (int i = 0; i < text.length(); i++) {
-      char c = text.charAt(i);
-      int index = (int) (c - ' ');
-      if (index >= 0 && index < font.length) {
-        draw(font[index], x, y);
-        x += FONT_SIZE;
-      }
-    }
-  }
-
-  public void drawTextWithNewLines(Image[] font, String text, int x, int y) {
-    String[] lines = text.split("\n");
-    for (String line : lines) {
-      drawText(font, line, x, y);
-      y += FONT_SIZE;
-    }
-  }
-
-  public void drawCenteredText(Image[] font, String text, int x, int y) {
-    drawText(font, text, x - (text.length() * FONT_SIZE / 2), y - (FONT_SIZE / 2));
-  }*/
-
   public void drawTextBox(Font font, String text, int x, int y, int w, int h, int color) {
     String[] lines = text.split("\n");
     fillRect(x, y, w, h, 0xff000000);
@@ -123,14 +93,6 @@ public class Surface {
   public void fillRect(float x, float y, float w, float h, int color) {
     raw.setFillColor(color);
     raw.fillRect(x, y, w, h);
-  }
-
-  public static int mapVariant(int frame, int msPerFrame) {
-    return frame / Math.max(1, 400 / msPerFrame);
-  }
-
-  public static int spriteVariant(int frame, int msPerFrame) {
-    return frame / Math.max(1, 200 / msPerFrame);
   }
 }
 

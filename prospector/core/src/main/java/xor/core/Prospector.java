@@ -45,6 +45,7 @@ public class Prospector extends SceneGame {
   public void update(Clock clock) {
     if (loadingFinished) {
       menu.tick(FRAME_MS);
+      Animator.tick(FRAME_MS);
 
     } else if (!fontLoaded && Font.RAW.isLoaded()) {
       Font.finishLoading();
@@ -73,20 +74,17 @@ public class Prospector extends SceneGame {
     }
   }
 
-  private int frame = 0;
-
   @Override
   public void paintScene() {
     surface.saveTx();
     surface.begin();
     surface.clear(0, 0, 0, 1);
     
-    surface.setVariants(frame++, FRAME_MS);
     surface.scale(ZOOM, ZOOM);
     
     try {
       if (loadingFinished) {
-        menu.renderAll(surface, FRAME_MS / 2);
+        menu.renderAll(surface);
       } else if (fontLoaded) {
         surface.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff000000);
         if (titleLoaded) {

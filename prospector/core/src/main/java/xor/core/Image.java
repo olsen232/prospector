@@ -17,8 +17,6 @@ public class Image implements LoadTracker.Loadable {
 
   public playn.core.Image raw() {
     return raw;
-    //if (variants.length == 1) return variants[0];
-    //return variants[v % variants.length];
   }
   
   public boolean isLoaded() {
@@ -81,6 +79,16 @@ public class Image implements LoadTracker.Loadable {
     int[] pixels = new int[w * h];
     raw.getRgb(0, 0, w, h, pixels, 0, w);
     return pixels;
+  }
+  
+  public void setPixels(int[] pixels) {
+    int w = width();
+    int h = height();
+    raw.setRgb(0, 0, w, h, pixels, 0, w);
+  }
+  
+  public Image cycle(Animator animator) {
+    return AnimatedImage.createCycle(this, animator);
   }
   
   public void updateTexture() {

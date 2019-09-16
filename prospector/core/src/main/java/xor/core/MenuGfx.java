@@ -12,7 +12,7 @@ public final class MenuGfx {
   public static Image TITLE;
   public static Image DIGITS_RAW;
   public static Image[] DIGITS;
-  public static Image GEARS;
+  public static Image[] GEARS;
   public static Image EDITOR_BUTTONS;
 
   public static void startLoading() {
@@ -23,11 +23,10 @@ public final class MenuGfx {
 
   public static void finishLoading() {
     DIGITS = DIGITS_RAW.recolor(TRANSLUCENT_BROWN).tile(DIGIT_WIDTH, DIGIT_HEIGHT);
-    GEARS = gearSubImage(MOVES_DIAL_X, MOVES_DIAL_Y);
-    //new Image(new Image[] {
-        //gearSubImage(MOVES_DIAL_X, MOVES_DIAL_Y),
-        //gearSubImage(BALLOONS_DIAL_X, BALLOONS_DIAL_Y),
-    //});
+    GEARS = new Image[] {
+      gearSubImage(MOVES_DIAL_X, MOVES_DIAL_Y),
+      gearSubImage(BALLOONS_DIAL_X, BALLOONS_DIAL_Y),
+    };
   }
 
   private static Image gearSubImage(int dialX, int dialY) {

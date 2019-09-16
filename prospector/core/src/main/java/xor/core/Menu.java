@@ -175,7 +175,7 @@ public class Menu {
     return null;
   }
 
-  public void renderAll(Surface surface, int ms) {
+  public void renderAll(Surface surface) {
     boolean isEditorMode = levelEditor.isActive() && !mazeController.isActive();
     Image stateIcon = isEditorMode ? levelEditor.stateIcon() : mazeController.stateIcon();
     int stateIconOffset = isEditorMode ? levelEditor.stateIconOffset() : mazeController.stateIconOffset();

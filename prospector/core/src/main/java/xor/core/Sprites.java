@@ -101,7 +101,7 @@ public final class Sprites {
   }
 
   public static void finishLoading() {
-    Image[] spritesSource = SPRITES_RAW.tile(SPRITE_SIZE);
+    Image[] spritesSource = SPRITES_RAW.cycle(Animator.SPRITE).tile(SPRITE_SIZE);
     for (int src = 0; src < SPRITE_SHEET.length; src++) {
       int dest = SPRITE_SHEET[src];
       if (dest >= 0 && dest < ALL_SPRITES.size()) {
