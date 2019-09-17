@@ -59,11 +59,11 @@ public class CounterRenderer implements MazeStateListener {
     updateStateIcon();
   }
 
-  public void renderMoves(int percent, Surface surface) {
+  public void renderMoves(Surface surface, int percent) {
     render(4, MOVES_DIAL_X, MOVES_DIAL_Y, moves, deltaMoves, percent, surface);
   }
 
-  public void renderBalloons(int percent, Surface surface) {
+  public void renderBalloons(Surface surface, int percent) {
     render(2, BALLOONS_DIAL_X, BALLOONS_DIAL_Y, requiredBalloons, deltaRequiredBalloons, percent, surface);
   }
 

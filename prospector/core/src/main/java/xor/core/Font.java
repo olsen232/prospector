@@ -72,4 +72,21 @@ public class Font {
     }
     centeredSingleLine(surface, text.subSequence(start, text.length()), sx, y);
   }
+  
+  public void drawTextBox(Surface surface, CharSequence text, int x, int y, int w, int h, int color) {
+    int numLines = count(text, '\n') + 1;
+    surface.fillRect(x, y, w, h, 0xff000000);
+    surface.drawRect(x, y, w, h, color);
+    x = x + ((w + 1) / 2);
+    y = y + ((h + 1) / 2) - (numLines * FONT_SIZE / 2) + (FONT_SIZE / 2); 
+    centered(surface, text, x, y);
+  }
+  
+  private static int count(CharSequence text, char c) {
+    int count = 0;
+    for (int i = 0; i < text.length(); i++) {
+      if (text.charAt(i) == c) count += 1;
+    }
+    return count;
+  }
 }

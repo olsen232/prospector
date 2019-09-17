@@ -103,10 +103,10 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
     } else if (player.isAlive() || player.state() == PlayerState.TELEPORTING) {
       Pose pose = player.pose(percent);
       Image sprite = Sprites.PLAYERS_POSES[player.code][pose.code];
-      surface.drawSlidingSpriteTile(sprite, x, y, player.movement(), percent);
+      surface.drawSlidingTile(sprite, x, y, player.movement(), percent);
 
     } else if (player.state() == PlayerState.DYING) {
-      surface.animateSpriteTile(Sprites.PLAYERS_DYING[player.code], x, y, 3, percent);
+      surface.drawTile(Sprites.PLAYERS_DYING[player.code].frame(percent), x, y);
     }
   }
 
@@ -127,17 +127,17 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
           sprite = Sprites.ROCK_EYES[(int)(Sprites.ROCK_EYES.length * Math.random())];
         }
 
-        surface.drawSlidingSpriteTile(sprite, x, y, mazeState.movement(), percent);
+        surface.drawSlidingTile(sprite, x, y, mazeState.movement(), percent);
 
         break;
       case EXPLOSION:
         x = mazeState.getActiveObjectX();
         y = mazeState.getActiveObjectY();
         cellType = mazeState.getActiveObjectType();
-        int frame = 2 + (Sprites.EXPLOSION.length - 2) * percent / 100;
-        surface.drawTile(Sprites.EXPLOSION[frame], x, y);
+        int fastPercent = 25 + (percent * 75 / 100);
+        surface.drawTile(Sprites.EXPLOSION_ANIM.frame(fastPercent), x, y);
         for (Direction d : MazeState.getExplosionDirections(cellType)) {
-          surface.animateSpriteTile(Sprites.EXPLOSION, d.dx(x), d.dy(y), 1, percent);
+          surface.drawTile(Sprites.EXPLOSION_ANIM.frame(percent), d.dx(x), d.dy(y));
         }
       default:
     }

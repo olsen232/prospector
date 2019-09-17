@@ -175,7 +175,7 @@ public class Menu {
     return null;
   }
 
-  public void renderAll(Surface surface) {
+  public void renderAll(Surface surface, int deltaMs) {
     boolean isEditorMode = levelEditor.isActive() && !mazeController.isActive();
     Image stateIcon = isEditorMode ? levelEditor.stateIcon() : mazeController.stateIcon();
     int stateIconOffset = isEditorMode ? levelEditor.stateIconOffset() : mazeController.stateIconOffset();
@@ -187,7 +187,7 @@ public class Menu {
       surface.draw(MenuGfx.EDITOR_BUTTONS, EDITOR_BUTTONS_X, EDITOR_BUTTONS_Y);
     }
 
-    renderViewport(surface);
+    renderViewport(surface, deltaMs);
 
     if (mazeController.isActive()) {
       surface.draw(mazeController.renderMap(), MAP_X, MAP_Y);
@@ -197,12 +197,12 @@ public class Menu {
 
     if (mazeController.isActive()
         || (mazeController.wasActive() && !levelEditor.isActive())) {
-      mazeController.renderMovesCounter(surface);
-      mazeController.renderBalloonsCounter(surface);
+      mazeController.renderMovesCounter(surface, deltaMs);
+      mazeController.renderBalloonsCounter(surface, deltaMs);
     }
   }
 
-  private void renderViewport(Surface surface) {
+  private void renderViewport(Surface surface, int deltaMs) {
     if (intro) return;
 
     surface.startClipped(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_SIZE_PX, VIEWPORT_SIZE_PX);
@@ -211,7 +211,7 @@ public class Menu {
       surface.fillRect(0, 0, VIEWPORT_SIZE_PX, VIEWPORT_SIZE_PX, 0xff000000);
 
       if (mazeController.isActive()) {
-        mazeController.render(surface);
+        mazeController.render(surface, deltaMs);
       } else if (levelEditor.isActive()) {
         levelEditor.render(surface);
       } else {
@@ -234,17 +234,17 @@ public class Menu {
   private void renderMainMenu(Surface surface) {
     Font.BROWN.centeredSingleLine(surface, "Guide the Prospectors", 96, 12);
     Font.BROWN.centeredSingleLine(surface, "through the", 96, 24);
-    surface.drawTextBox(Font.BROWN, "Mazes\nof Xor", 8, 40, 84, 40, MenuGfx.BROWN);
-    surface.drawTextBox(Font.BROWN, "Mazes of\nProcyon", 99, 40, 84, 40, MenuGfx.BROWN);
-    surface.drawTextBox(Font.WHITE, "<", 2, 52, 15, 15, MenuGfx.BROWN);
-    surface.drawTextBox(Font.WHITE, ">", 174, 52, 15, 15, MenuGfx.BROWN);
+    Font.BROWN.drawTextBox(surface, "Mazes\nof Xor", 8, 40, 84, 40, MenuGfx.BROWN);
+    Font.BROWN.drawTextBox(surface, "Mazes of\nProcyon", 99, 40, 84, 40, MenuGfx.BROWN);
+    Font.WHITE.drawTextBox(surface, "<", 2, 52, 15, 15, MenuGfx.BROWN);
+    Font.WHITE.drawTextBox(surface, ">", 174, 52, 15, 15, MenuGfx.BROWN);
 
     int tip = Ints.modulo(menuMs / 5000, TIP_SPRITES.length);
     surface.draw(Sprites.CELLS[TIP_SPRITES[tip].code], 8, 96);
-    surface.drawTextBox(Font.BROWN, TIP_TEXT[tip], 34, 98, 152, 20, 0);
+    Font.BROWN.drawTextBox(surface, TIP_TEXT[tip], 34, 98, 152, 20, 0);
 
-    surface.drawTextBox(Font.BROWN, "Load/Save", 8, 134, 84, 20, MenuGfx.BROWN);
-    surface.drawTextBox(Font.BROWN, "Level\nEditor", 99, 134, 84, 20, MenuGfx.BROWN);
+    Font.BROWN.drawTextBox(surface, "Load/Save", 8, 134, 84, 20, MenuGfx.BROWN);
+    Font.BROWN.drawTextBox(surface, "Level\nEditor", 99, 134, 84, 20, MenuGfx.BROWN);
 
     int credit = Ints.modulo((menuMs - 2500) / 5000, CREDITS_TEXT.length);
     Font.BROWN.leftAligned(surface, CREDITS_TEXT[credit], 8, 164);

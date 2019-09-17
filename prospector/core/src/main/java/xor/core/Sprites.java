@@ -48,9 +48,12 @@ public final class Sprites {
     HERB_POSES, PIP_POSES,
   };
 
-  public static final Image[][] PLAYERS_DYING = new Image[][] {
-    HERB_DYING, PIP_DYING,
+  public static final Animation[] PLAYERS_DYING = new Animation[] {
+    new Animation(HERB_DYING, 3),
+    new Animation(PIP_DYING, 3),
   };
+  
+  public static final Animation EXPLOSION_ANIM = new Animation(EXPLOSION, 1);
 
   public static final int[] SPRITE_SHEET = new int[] {
     herb(CENTER),   herb(UP),      herb(DOWN),    herb(HALF_RIGHT), herb(RIGHT),

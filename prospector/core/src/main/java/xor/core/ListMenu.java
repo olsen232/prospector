@@ -37,11 +37,11 @@ public class ListMenu {
       Font font = (entryIndex == selectedIndex) ? Font.WHITE : Font.YELLOW;
       font.singleLine(surface, entries[entryIndex].rowText, START_X, START_Y + i * (FONT_SIZE + LINE_SPACE));
     }
-    surface.drawTextBox(Font.BROWN, listTitle, FOOTER_X, FOOTER_Y, FOOTER_WIDTH, FOOTER_HEIGHT, MenuGfx.BROWN);
+    Font.BROWN.drawTextBox(surface, listTitle, FOOTER_X, FOOTER_Y, FOOTER_WIDTH, FOOTER_HEIGHT, MenuGfx.BROWN);
     if (back == Direction.LEFT) {
-      surface.drawTextBox(Font.BROWN, "<", 2, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
+      Font.BROWN.drawTextBox(surface, "<", 2, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
     } else if (back == Direction.RIGHT) {
-      surface.drawTextBox(Font.BROWN, ">", 172, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
+      Font.BROWN.drawTextBox(surface, ">", 172, FOOTER_Y, 16, FOOTER_HEIGHT, MenuGfx.BROWN);
     }
   }
 

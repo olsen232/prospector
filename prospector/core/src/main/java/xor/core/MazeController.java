@@ -229,7 +229,7 @@ public class MazeController {
 
   public void renderDialog(Surface surface) {
     if (dialogText() != null) {
-      surface.drawTextBox(Font.BROWN, dialogText(), DIALOG_X, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT, MenuGfx.BROWN);
+      Font.BROWN.drawTextBox(surface, dialogText(), DIALOG_X, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT, MenuGfx.BROWN);
     }
   }
 
@@ -246,20 +246,20 @@ public class MazeController {
     return counterRenderer.stateIconOffset();
   }
 
-  public void renderMovesCounter(Surface surface) {
-    counterRenderer.renderMoves(percent(), surface);
+  public void renderMovesCounter(Surface surface, int deltaMs) {
+    counterRenderer.renderMoves(surface, percent(deltaMs));
   }
 
-  public void renderBalloonsCounter(Surface surface) {
-    counterRenderer.renderBalloons(percent(), surface);
+  public void renderBalloonsCounter(Surface surface, int deltaMs) {
+    counterRenderer.renderBalloons(surface, percent(deltaMs));
   }
 
-  private int percent() {
+  private int percent(int deltaMs) {
     int totalMsForCurrentState = mazeState.state().ms;
     if (totalMsForCurrentState == 0) {
       return 0;
     }
-    return Ints.clamp(100 * msInCurrentState / totalMsForCurrentState, 0, 99);
+    return Ints.clamp(100 * (msInCurrentState + speedUp * deltaMs) / totalMsForCurrentState, 0, 99);
   }
 
   public boolean isReplaying() {
@@ -394,8 +394,8 @@ public class MazeController {
     }
   }
 
-  public void render(Surface surface) {
-    mazeRenderer.render(getActiveViewport(), percent(), surface);
+  public void render(Surface surface, int deltaMs) {
+    mazeRenderer.render(getActiveViewport(), percent(deltaMs), surface);
     renderDialog(surface);
   }
 

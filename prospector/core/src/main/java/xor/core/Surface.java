@@ -52,14 +52,8 @@ public class Surface {
   public void drawTile(Image tile, int x, int y) {
     draw(tile, x * TILE_SIZE, y * TILE_SIZE);
   }
-
-  public void animateSpriteTile(Image[] animation, int x, int y, int repeats, int percent) {
-    if (animation == null) return;
-    int frame = (animation.length * repeats * percent / 100) % animation.length;
-    drawTile(animation[frame], x, y);
-  }
-
-  public void drawSlidingSpriteTile(Image tile, int x, int y, Direction movement, int percent) {
+  
+  public void drawSlidingTile(Image tile, int x, int y, Direction movement, int percent) {
     if (tile == null) return;
     if (movement == null) {
       drawTile(tile, x, y);
@@ -67,18 +61,6 @@ public class Surface {
       int px = movement.tweenX(x * TILE_SIZE, percent, TILE_SIZE);
       int py = movement.tweenY(y * TILE_SIZE, percent, TILE_SIZE);
       draw(tile, px, py);
-    }
-  }
-
-  public void drawTextBox(Font font, String text, int x, int y, int w, int h, int color) {
-    String[] lines = text.split("\n");
-    fillRect(x, y, w, h, 0xff000000);
-    drawRect(x, y, w, h, color);
-    x = x + ((w + 1)/2);
-    y = y + ((h + 1)/2) - (lines.length * FONT_SIZE / 2) + (FONT_SIZE / 2); 
-    for (int l = 0; l < lines.length; l++) {
-      font.centeredSingleLine(this, lines[l], x, y);
-      y += FONT_SIZE;
     }
   }
 

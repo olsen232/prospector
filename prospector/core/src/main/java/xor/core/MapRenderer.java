@@ -26,7 +26,7 @@ public class MapRenderer implements MazeStateListener {
     this.mazeState = null;
 
     size = findSize(maze);
-    zoom = MAP_SIZE * ZOOM / size;
+    zoom = MAP_SIZE / size;
     originX = (size - maze.width) / 2;
     originY = (size - maze.height) / 2;
 

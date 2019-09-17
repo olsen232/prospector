@@ -19,6 +19,7 @@ public class Prospector extends SceneGame {
   private boolean loadingFinished = false;
   private boolean titleLoaded = false;
   private boolean fontLoaded = false;
+  private int updatedAtMs;
 
   public Prospector(Platform platform) {
     super(platform.raw, FRAME_MS);
@@ -43,6 +44,7 @@ public class Prospector extends SceneGame {
 
   @Override
   public void update(Clock clock) {
+    updatedAtMs = Platform.INSTANCE.raw.tick();
     if (loadingFinished) {
       menu.tick(FRAME_MS);
       Animator.tick(FRAME_MS);
@@ -76,6 +78,8 @@ public class Prospector extends SceneGame {
 
   @Override
   public void paintScene() {
+    int deltaMs = Platform.INSTANCE.raw.tick() - updatedAtMs;
+  
     surface.saveTx();
     surface.begin();
     surface.clear(0, 0, 0, 1);
@@ -84,7 +88,7 @@ public class Prospector extends SceneGame {
     
     try {
       if (loadingFinished) {
-        menu.renderAll(surface);
+        menu.renderAll(surface, deltaMs);
       } else if (fontLoaded) {
         surface.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff000000);
         if (titleLoaded) {
