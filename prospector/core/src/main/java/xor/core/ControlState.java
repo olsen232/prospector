@@ -4,6 +4,8 @@ import static xor.core.PixelConstants.*;
 
 public class ControlState {
 
+  public final int mouseScale;
+
   private int controlBits = 0;
   private Control freshControl = null;
 
@@ -14,6 +16,10 @@ public class ControlState {
   private boolean mousePressed;
   private int lastMouseX;
   private int lastMouseY;
+  
+  public ControlState() {
+    this.mouseScale = Platform.INSTANCE.zoom;
+  }
 
   public void onKeyChange(playn.core.Key k, boolean pressed) {
     Control c = Control.forKey(k);
@@ -46,16 +52,16 @@ public class ControlState {
   public void onMouseChange(int rawX, int rawY, boolean pressed) {
     mousePressed = pressed;
     if (mousePressed) {
-      lastMouseX = rawX / ZOOM;
-      lastMouseY = rawY / ZOOM;
+      lastMouseX = rawX / mouseScale;
+      lastMouseY = rawY / mouseScale;
       freshMouseClick = true;
     }
   }
 
   public void onMouseDragged(int rawX, int rawY) {
     if (mousePressed && !freshMouseClick) {
-      lastMouseX = rawX / ZOOM;
-      lastMouseY = rawY / ZOOM;
+      lastMouseX = rawX / mouseScale;
+      lastMouseY = rawY / mouseScale;
     }
   }
 

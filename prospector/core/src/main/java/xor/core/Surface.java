@@ -2,12 +2,11 @@ package xor.core;
 
 import static xor.core.PixelConstants.FONT_SIZE;
 import static xor.core.PixelConstants.TILE_SIZE;
-import static xor.core.PixelConstants.ZOOM;
 
 public class Surface {
 
   public final playn.core.Surface raw;
-  public float scaleFactor = 1;
+  public float clipFactor = 1;
 
   public Surface(playn.core.Surface raw) {
     this.raw = raw;
@@ -32,10 +31,10 @@ public class Surface {
 
   public void startClipped(int x, int y, int w, int h) {
     raw.startClipped(
-        (int) (x * ZOOM * scaleFactor),
-        (int) (y * ZOOM * scaleFactor),
-        (int) (w * ZOOM * scaleFactor),
-        (int) (h * ZOOM * scaleFactor));
+        (int) (x * clipFactor),
+        (int) (y * clipFactor),
+        (int) (w * clipFactor),
+        (int) (h * clipFactor));
   }
 
   public void endClipped() {

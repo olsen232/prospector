@@ -2,7 +2,7 @@ var $wnd = $wnd || window.parent;
 var __gwtModuleFunction = $wnd.prospector;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
-var $gwt_version = "2.8.1";
+var $gwt_version = "2.8.2";
 var $strongName = '';
 var $gwt = {};
 var $doc = $wnd.document;

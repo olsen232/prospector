@@ -63,15 +63,11 @@ function prospector(){
       return;
     }
     var scriptFrame = $doc_0.createElement('iframe');
-    scriptFrame.src = 'javascript:""';
     scriptFrame.id = 'prospector';
     scriptFrame.style.cssText = 'position:absolute; width:0; height:0; border:none; left: -1000px;' + ' top: -1000px;';
     scriptFrame.tabIndex = -1;
     $doc_0.body.appendChild(scriptFrame);
-    frameDoc = scriptFrame.contentDocument;
-    if (!frameDoc) {
-      frameDoc = scriptFrame.contentWindow.document;
-    }
+    frameDoc = scriptFrame.contentWindow.document;
     frameDoc.open();
     var doctype = document.compatMode == 'CSS1Compat'?'<!doctype html>':'';
     frameDoc.write(doctype + '<html><head><\/head><body><\/body><\/html>');
@@ -335,7 +331,7 @@ function prospector(){
     }
     var strongName;
     try {
-      strongName = 'B11637B0409A49C9BF8CC584790C2B7A';
+      strongName = 'CC4C4FA73ACB58E7896A841292DA2BC9';
       var idx = strongName.indexOf(':');
       if (idx != -1) {
         softPermutationId = parseInt(strongName.substring(idx + 1), 10);

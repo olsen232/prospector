@@ -24,7 +24,7 @@ public class Prospector extends SceneGame {
   public Prospector(Platform platform) {
     super(platform.raw, FRAME_MS);
     surface = new Surface(viewSurf);
-    surface.scaleFactor = platform.raw.graphics().scale().factor;
+    surface.clipFactor = platform.raw.graphics().scale().factor * platform.zoom;
 
     MenuGfx.startLoading();
     Font.startLoading();
@@ -84,7 +84,7 @@ public class Prospector extends SceneGame {
     surface.begin();
     surface.clear(0, 0, 0, 1);
     
-    surface.scale(ZOOM, ZOOM);
+    surface.scale(Platform.INSTANCE.zoom, Platform.INSTANCE.zoom);
     
     try {
       if (loadingFinished) {

@@ -90,9 +90,13 @@ public class Menu {
     }
   }
 
-  public void load(String s) {
+  public static void load(String s) {
+    Loaded loaded = LoadSave.load(s, Menu.INSTANCE.leftList, Menu.INSTANCE.rightList);
+    Menu.INSTANCE.load(loaded);
+  }
+  
+  public void load(Loaded loaded) {
     loadSave = false;
-    Loaded loaded = LoadSave.load(s, leftList, rightList);
     if (loaded == null) {
       return;
     }
@@ -143,6 +147,8 @@ public class Menu {
         mazeController.setActive(false);
       } else if (levelEditor.isActive()) {
         levelEditor.setActive(false);
+      } else {
+        Platform.INSTANCE.exit();
       }
     }
   }

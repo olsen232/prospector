@@ -18,34 +18,36 @@ public class ProspectorJava {
 
   public static void main (String[] args) {
     LWJGLPlatform.Config config = new LWJGLPlatform.Config();
-    config.width = SCREEN_WIDTH * ZOOM;
-    config.height = SCREEN_HEIGHT * ZOOM;
     LWJGLPlatform raw = new LWJGLPlatform(config);
-    Platform platform = new Platform(raw);
-    platform.canvasCreator = new JavaCanvasCreator(raw.graphics());    
+    JavaPlatform platform = new JavaPlatform(raw);
+    raw.graphics().setSize(SCREEN_WIDTH * platform.zoom, SCREEN_HEIGHT * platform.zoom, false);
     new Prospector(platform);
     raw.start();
   }
   
-  static class JavaCanvasCreator implements Platform.CanvasCreator {
-    private final Graphics graphics; 
-    
-    JavaCanvasCreator(Graphics graphics) {
-      this.graphics = graphics;
+  static class JavaPlatform extends Platform { 
+    JavaPlatform(LWJGLPlatform raw) {
+      super(raw);
     }
 
-    public Canvas create(int pixelWidth, int pixelHeight) {
+    @Override
+    public Canvas createRawCanvas(int pixelWidth, int pixelHeight) {
       try {
         Field f = Graphics.class.getDeclaredField("scale");
         f.setAccessible(true);
-        Scale temp = (Scale) f.get(graphics);
-        f.set(graphics, Scale.ONE);
-        Canvas canvas = graphics.createCanvas(pixelWidth, pixelHeight);
-        f.set(graphics, temp);
+        Scale temp = (Scale) f.get(raw.graphics());
+        f.set(raw.graphics(), Scale.ONE);
+        Canvas canvas = raw.graphics().createCanvas(pixelWidth, pixelHeight);
+        f.set(raw.graphics(), temp);
         return canvas;
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
+    }
+    
+    @Override
+    public void exit() {
+      System.exit(0);
     }
   }
 }

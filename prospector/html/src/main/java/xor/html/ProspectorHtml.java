@@ -3,44 +3,42 @@ package xor.html;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.core.client.EntryPoint;
-import playn.html.HtmlPlatform;
 import playn.html.HtmlGraphics;
 import playn.html.HtmlCanvas;
 import playn.html.HtmlImage;
-import playn.core.Graphics;
 import playn.core.Canvas;
 import playn.core.Scale;
 import xor.core.Prospector;
-import xor.core.Toolkit;
 import xor.core.LoadSave;
+import xor.core.Platform;
+
+import static xor.core.PixelConstants.*;
 
 public class ProspectorHtml implements EntryPoint {
 
   @Override public void onModuleLoad () {
     LoadSave.asciiPrompt = new JavascriptAsciiPrompt();
 
-    HtmlPlatform.Config config = new HtmlPlatform.Config();
-    config.experimentalFullscreen = true;
-    // use config to customize the HTML platform, if needed
-    HtmlPlatform plat = new HtmlPlatform(config);
-    plat.assets().setPathPrefix("prospector/");
-    HtmlCanvasCreator cc = new HtmlCanvasCreator(plat.graphics());
-    new Prospector(plat, cc);
-    plat.start();
+    playn.html.HtmlPlatform.Config config = new playn.html.HtmlPlatform.Config();
+    playn.html.HtmlPlatform raw = new playn.html.HtmlPlatform(config);
+    HtmlPlatform platform = new HtmlPlatform(raw);
+    raw.assets().setPathPrefix("prospector/");
+    raw.graphics().setSize(SCREEN_WIDTH * platform.zoom, SCREEN_HEIGHT * platform.zoom);
+    new Prospector(platform);
+    raw.start();
   }
 
-  static class HtmlCanvasCreator implements Toolkit.CanvasCreator {
-    private final Graphics graphics; 
-    
-    HtmlCanvasCreator(Graphics graphics) {
-      this.graphics = graphics;
+  static class HtmlPlatform extends Platform {    
+    HtmlPlatform(playn.html.HtmlPlatform raw) {
+      super(raw);
     }
 
-    public Canvas createCanvas(int pixelWidth, int pixelHeight) {
+    @Override
+    public playn.core.Canvas createRawCanvas(int pixelWidth, int pixelHeight) {
       CanvasElement elem = Document.get().createCanvasElement();
       elem.setWidth(pixelWidth);
       elem.setHeight(pixelHeight);
-      return new HtmlCanvas(graphics, new HtmlImage(graphics, Scale.ONE, elem, "<canvas>"));
+      return new HtmlCanvas(raw.graphics(), new HtmlImage(raw.graphics(), Scale.ONE, elem, "<canvas>"));
     }
   }
 

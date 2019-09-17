@@ -3,8 +3,6 @@ package xor.core;
 public final class PixelConstants {
   private PixelConstants() {}
 
-  public static final int ZOOM = 3;
-
   public static final int SCREEN_WIDTH = 320;
   public static final int SCREEN_HEIGHT = 224;
 
