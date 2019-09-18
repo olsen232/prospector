@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.prospector;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.8.2";
-var $strongName = 'E8A872DB8AFBD132057F70E2C479403E';
+var $strongName = '223AEE4B8D1DBB041219AE5DB513EFBA';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -13167,9 +13167,9 @@ function $handleControls(this$static){
   $isFreshClickInside(this$static.controlState, 293, 184, 24, 24) && (this$static.active = false);
 }
 
-function $render_1(this$static, surface){
+function $render_1(this$static, surface, deltaMs){
   var percent;
-  percent = $isMoving(this$static.viewport_0)?clamp(100 * this$static.msSinceLastMove / 100 | 0, 99):0;
+  percent = $isMoving(this$static.viewport_0)?clamp(100 * (this$static.msSinceLastMove + deltaMs) / 100 | 0, 99):0;
   $render(this$static.mazeRenderer, this$static.viewport_0, percent, surface, true);
   if (this$static.showPalette) {
     $translate(surface.raw, 120, 0);
@@ -14715,7 +14715,7 @@ function $renderViewport(this$static, surface, deltaMs){
     $translate(surface.raw, 16, 16);
     $setFillColor(surface.raw, $intern_45);
     $fillRect_0(surface.raw, 0, 0, 192, 192);
-    this$static.mazeController.active?$render_4(this$static.mazeController, surface, deltaMs):this$static.levelEditor.active?$render_1(this$static.levelEditor, surface):$activeList(this$static)?$render_2($activeList(this$static), surface):($centeredSingleLine(BROWN, surface, 'Guide the Prospectors', 96, 12) , $centeredSingleLine(BROWN, surface, 'through the', 96, 24) , $drawTextBox(BROWN, surface, 'Mazes\nof Xor', 8, 40, 84, 40, $intern_48) , $drawTextBox(BROWN, surface, 'Mazes of\nProcyon', 99, 40, 84, 40, $intern_48) , $drawTextBox(WHITE, surface, '<', 2, 52, 15, 15, $intern_48) , $drawTextBox(WHITE, surface, '>', 174, 52, 15, 15, $intern_48) , tip = modulo(this$static.menuMs / 5000 | 0, TIP_SPRITES.length) , $draw_6(surface, ($clinit_Sprites() , CELLS)[TIP_SPRITES[tip].code_0], 8, 96) , $drawTextBox(BROWN, surface, TIP_TEXT[tip], 34, 98, 152, 20, 0) , $drawTextBox(BROWN, surface, 'Load/Save', 8, 134, 84, 20, $intern_48) , $drawTextBox(BROWN, surface, 'Level\nEditor', 99, 134, 84, 20, $intern_48) , credit = modulo((this$static.menuMs - 2500) / 5000 | 0, CREDITS_TEXT.length) , $leftAligned(BROWN, surface, CREDITS_TEXT[credit]) , undefined);
+    this$static.mazeController.active?$render_4(this$static.mazeController, surface, deltaMs):this$static.levelEditor.active?$render_1(this$static.levelEditor, surface, deltaMs):$activeList(this$static)?$render_2($activeList(this$static), surface):($centeredSingleLine(BROWN, surface, 'Guide the Prospectors', 96, 12) , $centeredSingleLine(BROWN, surface, 'through the', 96, 24) , $drawTextBox(BROWN, surface, 'Mazes\nof Xor', 8, 40, 84, 40, $intern_48) , $drawTextBox(BROWN, surface, 'Mazes of\nProcyon', 99, 40, 84, 40, $intern_48) , $drawTextBox(WHITE, surface, '<', 2, 52, 15, 15, $intern_48) , $drawTextBox(WHITE, surface, '>', 174, 52, 15, 15, $intern_48) , tip = modulo(this$static.menuMs / 5000 | 0, TIP_SPRITES.length) , $draw_6(surface, ($clinit_Sprites() , CELLS)[TIP_SPRITES[tip].code_0], 8, 96) , $drawTextBox(BROWN, surface, TIP_TEXT[tip], 34, 98, 152, 20, 0) , $drawTextBox(BROWN, surface, 'Load/Save', 8, 134, 84, 20, $intern_48) , $drawTextBox(BROWN, surface, 'Level\nEditor', 99, 134, 84, 20, $intern_48) , credit = modulo((this$static.menuMs - 2500) / 5000 | 0, CREDITS_TEXT.length) , $leftAligned(BROWN, surface, CREDITS_TEXT[credit]) , undefined);
     $translate(surface.raw, -16, -16);
   }
    finally {

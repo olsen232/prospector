@@ -219,7 +219,7 @@ public class Menu {
       if (mazeController.isActive()) {
         mazeController.render(surface, deltaMs);
       } else if (levelEditor.isActive()) {
-        levelEditor.render(surface);
+        levelEditor.render(surface, deltaMs);
       } else {
         renderMenu(surface);
       }

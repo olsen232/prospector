@@ -14,6 +14,7 @@ import static xor.core.PixelConstants.*;
 
 import xor.core.Prospector;
 import xor.core.Platform;
+import xor.core.LoadSave;
 
 import java.lang.reflect.Field;
 
@@ -21,6 +22,7 @@ public class ProspectorJava {
 
   public static void main (String[] args) {
     LWJGLPlatform.Config config = new LWJGLPlatform.Config();
+    config.appName = "Prospector in the Mazes of XOR";
     LWJGLPlatform raw = new LWJGLPlatform(config);
     JavaPlatform platform = new JavaPlatform(raw);
     raw.graphics().setSize((int) (SCREEN_WIDTH * platform.zoom), (int) (SCREEN_HEIGHT * platform.zoom), false);

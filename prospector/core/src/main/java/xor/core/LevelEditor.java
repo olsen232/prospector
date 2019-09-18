@@ -148,9 +148,9 @@ public class LevelEditor {
     handleControls();
   }
 
-  public void render(Surface surface) {
+  public void render(Surface surface, int deltaMs) {
     int percent = viewport.isMoving()
-        ? Ints.clamp(100 * msSinceLastMove / MS_PER_MOVE, 0, 99)
+        ? Ints.clamp(100 * (msSinceLastMove + deltaMs) / MS_PER_MOVE, 0, 99)
         : 0;
     
     mazeRenderer.render(viewport, percent, surface, /*gridlines=*/ true);
