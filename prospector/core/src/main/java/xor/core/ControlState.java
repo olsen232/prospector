@@ -4,7 +4,7 @@ import static xor.core.PixelConstants.*;
 
 public class ControlState {
 
-  public final int mouseScale;
+  public final float mouseScale;
 
   private int controlBits = 0;
   private Control freshControl = null;
@@ -52,16 +52,16 @@ public class ControlState {
   public void onMouseChange(int rawX, int rawY, boolean pressed) {
     mousePressed = pressed;
     if (mousePressed) {
-      lastMouseX = rawX / mouseScale;
-      lastMouseY = rawY / mouseScale;
+      lastMouseX = (int) (rawX / mouseScale);
+      lastMouseY = (int) (rawY / mouseScale);
       freshMouseClick = true;
     }
   }
 
   public void onMouseDragged(int rawX, int rawY) {
     if (mousePressed && !freshMouseClick) {
-      lastMouseX = rawX / mouseScale;
-      lastMouseY = rawY / mouseScale;
+      lastMouseX = (int) (rawX / mouseScale);
+      lastMouseY = (int) (rawY / mouseScale);
     }
   }
 

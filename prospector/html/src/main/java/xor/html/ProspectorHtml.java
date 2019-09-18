@@ -23,7 +23,7 @@ public class ProspectorHtml implements EntryPoint {
     playn.html.HtmlPlatform raw = new playn.html.HtmlPlatform(config);
     HtmlPlatform platform = new HtmlPlatform(raw);
     raw.assets().setPathPrefix("prospector/");
-    raw.graphics().setSize(SCREEN_WIDTH * platform.zoom, SCREEN_HEIGHT * platform.zoom);
+    raw.graphics().setSize((int) (SCREEN_WIDTH * platform.zoom), (int) (SCREEN_HEIGHT * platform.zoom));
     new Prospector(platform);
     raw.start();
   }

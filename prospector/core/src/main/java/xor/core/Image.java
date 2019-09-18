@@ -88,7 +88,12 @@ public class Image implements LoadTracker.Loadable {
   }
   
   public Image cycle(Animator animator) {
-    return AnimatedImage.createCycle(this, animator);
+    int w = width();
+    int h = height();
+    int[] bottomRow = new int[w];
+    raw.getRgb(0, h - 1, w, 1, bottomRow, 0, w);
+    ColorCycle colorCycle = ColorCycle.fromPixelRow(bottomRow);
+    return colorCycle.apply(this, animator);
   }
   
   public void updateTexture() {

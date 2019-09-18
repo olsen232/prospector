@@ -1,17 +1,18 @@
 package xor.core;
 
 import playn.core.GL20;
+import pythagoras.f.IDimension;
 
 public class Platform {
   public static Platform INSTANCE;
 
   public final playn.core.Platform raw;
   
-  public final int zoom;
+  public final float zoom;
   
   public Platform(playn.core.Platform raw) {
     this.raw = raw;
-    this.zoom = findZoom(raw.graphics());
+    this.zoom = findZoom();
     INSTANCE = this;
   }
   
@@ -33,10 +34,15 @@ public class Platform {
     System.out.println("Exit");  // Platform can override
   }
   
-  private static int findZoom(playn.core.Graphics graphics) {
-    int widthZoom = (int) graphics.screenSize().width() * 9 / 10 / PixelConstants.SCREEN_WIDTH;
-    int heightZoom = (int) graphics.screenSize().height() * 9 / 10 / PixelConstants.SCREEN_HEIGHT;
-    int zoom = Math.min(widthZoom, heightZoom);
+  public IDimension availableArea() {
+    return raw.graphics().screenSize();
+  }
+  
+  public float findZoom() {
+    IDimension availableArea = availableArea();
+    float widthZoom = availableArea.width() / PixelConstants.SCREEN_WIDTH;
+    float heightZoom = availableArea.height() / PixelConstants.SCREEN_HEIGHT;
+    float zoom = Math.min(widthZoom, heightZoom);
     return Math.max(1, zoom);
   }
 }
