@@ -6,4 +6,4 @@ An HTML5 remake of a 1989 Amiga game by Logotron
 
 Playable at https://codemonkey232.github.io/prospector/
 
-Full instructions at /INSTRUCTIONS.md
+Full instructions at [INSTRUCTIONS.md](INSTRUCTIONS.md)
