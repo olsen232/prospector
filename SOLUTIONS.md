@@ -1,3 +1,5 @@
+Not the only solutions. Not the best solutions. Just solutions.
+
 ```
 Olaf's Warm Up
 xDDDDDDDDDDDDDDLLUDDLLRRDRRLDRLLLLLLLLLLLLLLLLLLLLLLLLLLLLLUUUUUUUUUUUUUUUDDDDDD
