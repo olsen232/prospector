@@ -35,7 +35,7 @@ public class MazeController {
   private boolean active = false;
   private boolean wasActive = false;
 
-  public final GameOverCallback callback;
+  public GameOverCallback callback;
 
   interface GameOverCallback {
     void onGameOver(int newHighscore);
@@ -199,7 +199,7 @@ public class MazeController {
   }
 
   public boolean isGameOver() {
-    return mazeState.state() == State.LEVEL_FAILED || mazeState.state() == State.LEVEL_COMPLETED;
+    return (mazeState.state() == State.LEVEL_FAILED || mazeState.state() == State.LEVEL_COMPLETED);
   }
 
   public void setDialogText(String dialogText) {
@@ -268,8 +268,6 @@ public class MazeController {
 
   public void tick(int ms) {
     handleExtraControls();
-    if (isGameOver()) return;
-
     chooseSpeedUp(ms);
 
     if (isReplaying() && superSpeedUp > 0) {
@@ -279,6 +277,7 @@ public class MazeController {
     }
       
     msInCurrentState += speedUp * ms;
+    if (isGameOver()) return;
 
     int totalMsForCurrentState = mazeState.state().ms;
     if (totalMsForCurrentState > 0 && msInCurrentState >= totalMsForCurrentState) {
@@ -307,6 +306,7 @@ public class MazeController {
     if (isGameOver() && callback != null) {
       callback.onGameOver(
           mazeState.state() == State.LEVEL_COMPLETED ? movesOut.size() : Integer.MAX_VALUE);
+      callback = null;
     }
     if (isGameOver() && isReplaying()) {
       lastReplayLength = movesOut.size();

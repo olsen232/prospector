@@ -25,8 +25,8 @@ public class MazeState {
     LIGHTS_TOGGLING      (150),
     THROUGH_TELEPORT     (300),
     STUCK_IN_TELEPORT    (1000),
-    LEVEL_FAILED,
-    LEVEL_COMPLETED;
+    LEVEL_FAILED         (250),
+    LEVEL_COMPLETED      (250);
 
     public final int code = this.ordinal();
     public final int ms;

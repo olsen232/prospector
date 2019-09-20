@@ -101,7 +101,9 @@ public class CounterRenderer implements MazeStateListener {
         surface.draw(MenuGfx.DIGITS[endDigit], x + DIGIT_X, y + DIAL_HEIGHT + DIGIT_Y - yDelta);
         surface.endClipped();
 
-        int gear = (i + startDigit + Animator.SPRITE.signal) % MenuGfx.GEARS.length;
+        int gear = (i + startDigit);
+        if (percent > 0 && percent < 99) gear += Animator.SPRITE.signal;
+        gear %= MenuGfx.GEARS.length;
         surface.draw(MenuGfx.GEARS[gear], x + GEAR_X, y + GEAR_Y);
       }
       start /= 10;
