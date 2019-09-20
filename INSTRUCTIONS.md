@@ -106,6 +106,7 @@ Keys:
 - Escape key exits the current level, or interrupts a replay.
 - Minus key or [ zooms out to see more of the level.
 - Plus key or ] zooms back in.
+- Shift key fast-forwards while held.
 
 Click the following icons in the lower-right corner of the screen:
 - The golden box showing Herb or Pip switches between the two prospectors.
