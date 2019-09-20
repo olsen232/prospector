@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.prospector;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.8.2";
-var $strongName = '223AEE4B8D1DBB041219AE5DB513EFBA';
+var $strongName = '3641D1AEFB6553ADAB008C116A8C1984';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -12625,7 +12625,9 @@ function $render_0(numDigits, x_0, y_0, start_0, delta, percent, surface){
       $draw_6(surface, DIGITS[startDigit], x_0 + 4, y_0 + 13 - yDelta);
       $draw_6(surface, DIGITS[endDigit], x_0 + 4, y_0 + 38 + 13 - yDelta);
       $endClipped(surface.raw);
-      gear = (i + startDigit + ($clinit_Animator() , SPRITE).signal) % GEARS.length;
+      gear = i + startDigit;
+      percent > 0 && percent < 99 && (gear += ($clinit_Animator() , SPRITE).signal);
+      gear %= GEARS.length;
       $draw_6(surface, GEARS[gear], x_0 + 17, y_0);
     }
     start_0 = start_0 / 10 | 0;
@@ -13700,7 +13702,10 @@ function $centerOnPlayers(this$static){
 }
 
 function $checkForGameOver(this$static){
-  (this$static.mazeState.state == ($clinit_MazeState$State() , LEVEL_FAILED) || this$static.mazeState.state == LEVEL_COMPLETED) && !!this$static.callback && $onGameOver(this$static.callback, this$static.mazeState.state == LEVEL_COMPLETED?this$static.movesOut.count:$intern_0);
+  if ((this$static.mazeState.state == ($clinit_MazeState$State() , LEVEL_FAILED) || this$static.mazeState.state == LEVEL_COMPLETED) && !!this$static.callback) {
+    $onGameOver(this$static.callback, this$static.mazeState.state == LEVEL_COMPLETED?this$static.movesOut.count:$intern_0);
+    this$static.callback = null;
+  }
   if ((this$static.mazeState.state == LEVEL_FAILED || this$static.mazeState.state == LEVEL_COMPLETED) && !!this$static.movesIn) {
     this$static.lastReplayLength = this$static.movesOut.count;
     this$static.movesIn = null;
@@ -13853,8 +13858,6 @@ function $tick_1(this$static){
   $dialogText(this$static) != null && $isFresh(this$static.controlState, ($clinit_Control() , OK)) && (this$static.dialogText = null , (this$static.mazeState.state == ($clinit_MazeState$State() , LEVEL_FAILED) || this$static.mazeState.state == LEVEL_COMPLETED) && (this$static.active = false));
   !!this$static.movesIn && $isFresh_0(this$static.controlState, INTERRUPT) && $abortReplay(this$static);
   $isFresh_0(this$static.controlState, ZOOM_IN_0)?$adjustViewportSize(this$static, -1):$isFresh_0(this$static.controlState, ZOOM_OUT_0) && $adjustViewportSize(this$static, 1);
-  if (this$static.mazeState.state == ($clinit_MazeState$State() , LEVEL_FAILED) || this$static.mazeState.state == LEVEL_COMPLETED)
-    return;
   $chooseSpeedUp(this$static);
   if (!!this$static.movesIn && this$static.superSpeedUp > 0) {
     $replayNextMoves(this$static, this$static.superSpeedUp);
@@ -13862,6 +13865,8 @@ function $tick_1(this$static){
     return;
   }
   this$static.msInCurrentState += this$static.speedUp * 33;
+  if (this$static.mazeState.state == ($clinit_MazeState$State() , LEVEL_FAILED) || this$static.mazeState.state == LEVEL_COMPLETED)
+    return;
   totalMsForCurrentState = this$static.mazeState.state.ms;
   if (totalMsForCurrentState > 0 && this$static.msInCurrentState >= totalMsForCurrentState) {
     $advanceToNextState(this$static.mazeState);
@@ -14551,7 +14556,7 @@ var BALLOON_COLLECTED, MAP_COLLECTED, NONE, OBJECT_STOPPED;
 var Lxor_core_MazeState$AdditionalEvent_2_classLit = createForEnum(59, values_22);
 function $clinit_MazeState$State(){
   $clinit_MazeState$State = emptyMethod;
-  WAITING_FOR_PLAYER = new MazeState$State('WAITING_FOR_PLAYER', 0);
+  WAITING_FOR_PLAYER = new MazeState$State;
   PLAYER_MOVING = new MazeState$State_0('PLAYER_MOVING', 1, 250);
   PLAYER_PUSHING_OBJECT = new MazeState$State_0('PLAYER_PUSHING_OBJECT', 2, 250);
   OBJECT_MOVING = new MazeState$State_0('OBJECT_MOVING', 3, 100);
@@ -14561,16 +14566,16 @@ function $clinit_MazeState$State(){
   LIGHTS_TOGGLING = new MazeState$State_0('LIGHTS_TOGGLING', 7, 150);
   THROUGH_TELEPORT = new MazeState$State_0('THROUGH_TELEPORT', 8, 300);
   STUCK_IN_TELEPORT = new MazeState$State_0('STUCK_IN_TELEPORT', 9, 1000);
-  LEVEL_FAILED = new MazeState$State('LEVEL_FAILED', 10);
-  LEVEL_COMPLETED = new MazeState$State('LEVEL_COMPLETED', 11);
+  LEVEL_FAILED = new MazeState$State_0('LEVEL_FAILED', 10, 250);
+  LEVEL_COMPLETED = new MazeState$State_0('LEVEL_COMPLETED', 11, 250);
 }
 
 function $$init_2(this$static){
   this$static.code_0 = this$static.ordinal;
 }
 
-function MazeState$State(enum$name, enum$ordinal){
-  Enum.call(this, enum$name, enum$ordinal);
+function MazeState$State(){
+  Enum.call(this, 'WAITING_FOR_PLAYER', 0);
   $$init_2(this);
   this.ms = 0;
 }
