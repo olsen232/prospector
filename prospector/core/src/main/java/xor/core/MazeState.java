@@ -14,7 +14,7 @@ public class MazeState {
 
   private static final boolean BALLOON_CHEAT = Boolean.FALSE;
 
-  enum State {
+  public enum State {
     WAITING_FOR_PLAYER,
     PLAYER_MOVING        (250),
     PLAYER_PUSHING_OBJECT(250),
