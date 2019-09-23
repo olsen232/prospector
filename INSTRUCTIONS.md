@@ -96,7 +96,7 @@ There are a few ways in which this remake is easier than the original - they are
 - You can zoom out to see further (see [Controls](#Controls)).
 - Replays now can undo mistakes (see [Replay Function](#Replay-Function))
 
-If you are 1989-level gifted, then just don't make use of these new features.
+If you like a challenge and you are 1989-level gifted, then just don't make use of these new features.
 
 ### Controls
 
