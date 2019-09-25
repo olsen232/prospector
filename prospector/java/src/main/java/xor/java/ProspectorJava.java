@@ -25,7 +25,6 @@ public class ProspectorJava {
     config.appName = "Prospector in the Mazes of XOR";
     LWJGLPlatform raw = new LWJGLPlatform(config);
     JavaPlatform platform = new JavaPlatform(raw);
-    raw.graphics().setSize((int) (SCREEN_WIDTH * platform.zoom), (int) (SCREEN_HEIGHT * platform.zoom), false);
     new Prospector(platform);
     raw.start();
   }
@@ -33,6 +32,18 @@ public class ProspectorJava {
   static class JavaPlatform extends Platform { 
     JavaPlatform(LWJGLPlatform raw) {
       super(raw);
+    }
+
+    public void setSize(int width, int height) {
+      try {
+        Field f = Graphics.class.getDeclaredField("scale");
+        f.setAccessible(true);
+        Scale temp = (Scale) f.get(raw.graphics());
+        ((playn.java.JavaGraphics) raw.graphics()).setSize(width, height, false);
+        f.set(raw.graphics(), temp);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
     @Override
