@@ -26,8 +26,6 @@ public class Prospector extends SceneGame {
     surface = new Surface(viewSurf);
     surface.clipFactor = platform.raw.graphics().scale().factor * platform.zoom;
 
-    System.out.println(platform.raw.graphics().scale().factor + " " + platform.zoom);
-
     MenuGfx.startLoading();
     Font.startLoading();
     Tiles.startLoading();
