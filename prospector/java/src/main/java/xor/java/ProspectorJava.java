@@ -94,6 +94,7 @@ public class ProspectorJava {
   static class AwtAsciiPrompt implements LoadSave.AsciiPrompt, ActionListener {
     Frame frame;
     TextArea textArea;
+    Label title;
     Button load;
     Button cancel;
 
@@ -105,18 +106,14 @@ public class ProspectorJava {
       pane.setLayout(new BorderLayout());
 
       textArea = new TextArea();
-      textArea.setFont(new Font("monospaced", Font.PLAIN, 16));
       pane.add(textArea, BorderLayout.CENTER);
 
-      Label label = new Label("Current state - copy this text to save, paste in text to load", Label.CENTER);
-      label.setFont(new Font("sansserif", Font.PLAIN, 50));
-      pane.add(label, BorderLayout.PAGE_START);
+      title = new Label("Current state - copy this text to save, paste in text to load", Label.CENTER);
+      pane.add(title, BorderLayout.PAGE_START);
 
       load = new Button("Load highscores / maze / replay");
-      load.setFont(new Font("sansserif", Font.PLAIN, 30));
       load.addActionListener(this);
       cancel = new Button("Cancel");
-      cancel.setFont(new Font("sansserif", Font.PLAIN, 30));
       cancel.addActionListener(this);
 
       Box buttons = Box.createHorizontalBox();
@@ -129,7 +126,14 @@ public class ProspectorJava {
 
     public void prompt(String output) {
       textArea.setText(output);
+
       IDimension screen = Platform.INSTANCE.raw.graphics().screenSize();
+      int fontSize = (int) (screen.height() * 0.008);
+      textArea.setFont(new Font("monospaced", Font.PLAIN, fontSize));
+      load.setFont(new Font("sansserif", Font.PLAIN, 2 * fontSize));
+      cancel.setFont(new Font("sansserif", Font.PLAIN, 2 * fontSize));
+      title.setFont(new Font("sansserif", Font.PLAIN, 3 * fontSize));
+
       frame.setBounds((int) screen.width() / 4, (int) screen.height() / 4, (int) screen.width() / 2, (int) screen.height() / 2);
       frame.setVisible(true);
     }
