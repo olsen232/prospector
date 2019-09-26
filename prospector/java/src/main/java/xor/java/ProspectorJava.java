@@ -21,20 +21,23 @@ import java.lang.reflect.Field;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.TextArea;
+import java.awt.Button;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.Frame;
+import java.awt.TextArea;
 import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
+
 
 public class ProspectorJava {
 
   public static void main (String[] args) {
-    LoadSave.asciiPrompt = new SwingAsciiPrompt();
+    LoadSave.asciiPrompt = new AwtAsciiPrompt();
 
     LWJGLPlatform.Config config = new LWJGLPlatform.Config();
     config.appName = "Prospector in the Mazes of XOR";
@@ -88,37 +91,39 @@ public class ProspectorJava {
     }
   }
 
-  static class SwingAsciiPrompt implements LoadSave.AsciiPrompt, ActionListener {
-    JFrame frame;
-    JTextArea textArea;
-    JButton load;
-    JButton cancel;
+  static class AwtAsciiPrompt implements LoadSave.AsciiPrompt, ActionListener {
+    Frame frame;
+    TextArea textArea;
+    Button load;
+    Button cancel;
 
-    public SwingAsciiPrompt() {
-      frame = new javax.swing.JFrame("Load / Save");
+    public AwtAsciiPrompt() {
+      frame = new Frame("Load / Save");
       frame.setUndecorated(true);
-      Container pane = frame.getContentPane();
-      textArea = new JTextArea();
+      Panel pane = new Panel();
+      frame.add(pane);
+      pane.setLayout(new BorderLayout());
+
+      textArea = new TextArea();
       textArea.setFont(new Font("monospaced", Font.PLAIN, 16));
       pane.add(textArea, BorderLayout.CENTER);
-      JLabel label = new JLabel("Current state - copy this text to save, paste in text to load", SwingConstants.CENTER);
-      label.setFont(label.getFont().deriveFont(30f));
+
+      Label label = new Label("Current state - copy this text to save, paste in text to load", Label.CENTER);
+      label.setFont(new Font("sansserif", Font.PLAIN, 50));
       pane.add(label, BorderLayout.PAGE_START);
 
-      Box buttons = Box.createHorizontalBox();
-      buttons.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-
-      load = new JButton("Load highscores / maze / replay");
-      load.setFont(label.getFont().deriveFont(20f));
+      load = new Button("Load highscores / maze / replay");
+      load.setFont(new Font("sansserif", Font.PLAIN, 30));
       load.addActionListener(this);
-      cancel = new JButton("Cancel");
-      cancel.setFont(label.getFont().deriveFont(20f));
+      cancel = new Button("Cancel");
+      cancel.setFont(new Font("sansserif", Font.PLAIN, 30));
       cancel.addActionListener(this);
+
+      Box buttons = Box.createHorizontalBox();
       buttons.add(buttons.createHorizontalGlue());
       buttons.add(load);
       buttons.add(cancel);
       buttons.add(buttons.createHorizontalGlue());
-
       pane.add(buttons, BorderLayout.PAGE_END);
     }
 
