@@ -8,6 +8,7 @@ public final class MenuGfx {
   public static final int YELLOW = 0xffeecc66;  // Was 0xffffdd77, added extra contrast.
   public static final int BROWN = 0xff885511;
   public static final int TRANSLUCENT_BROWN = 0x77772200;
+  public static final int BLACK = 0xff000000;
 
   public static Image TITLE;
   public static Image DIGITS_RAW;

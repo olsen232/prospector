@@ -3,7 +3,7 @@ package xor.core;
 import static xor.core.PixelConstants.FONT_SIZE;
 import static xor.core.PixelConstants.TILE_SIZE;
 
-public class Surface {
+public class Surface implements DrawImage {
 
   public final playn.core.Surface raw;
   public float clipFactor = 1;
@@ -45,6 +45,13 @@ public class Surface {
     if (image == null) return;
     Platform.INSTANCE.pixelate();
     raw.draw(image.raw().texture(), x, y);
+    Platform.INSTANCE.pixelate();
+  }
+
+  public void draw(Image image, float x, float y, float w, float h) {
+    if (image == null) return;
+    Platform.INSTANCE.pixelate();
+    raw.draw(image.raw().texture(), x, y, w, h);
     Platform.INSTANCE.pixelate();
   }
 

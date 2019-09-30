@@ -2,7 +2,7 @@ package xor.core;
 
 import static xor.core.PixelConstants.*;
 
-public class Canvas {
+public class Canvas implements DrawImage {
   public final playn.core.Canvas raw;
   public final Image image;
   

@@ -66,7 +66,7 @@ public class Prospector extends SceneGame {
       Sounds.finishLoading();
       Mazes.finishLoading();
 
-      Menu.INSTANCE = menu = new Menu(controlState, Mazes.XOR_MAZES, Mazes.PROCYON_MAZES);
+      menu = new Menu(controlState, Mazes.XOR_MAZES, Mazes.PROCYON_MAZES);
 
       controlState.clearFresh();
       if (Sounds.music) {

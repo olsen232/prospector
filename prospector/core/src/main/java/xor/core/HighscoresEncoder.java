@@ -5,14 +5,33 @@ import java.util.Arrays;
 public class HighscoresEncoder {
 
   private static int START_CHECKSUM = 4567;
-  public static int[] highscores = new int[30];
+  private static int[] highscores = new int[30];
 
-  public static String encode(ListMenu left, ListMenu right) {
+  private final ListMenu left;
+  private final ListMenu right;
+
+  public HighscoresEncoder(ListMenu left, ListMenu right) {
+    this.left = left;
+    this.right = right;
+  }
+
+  public String encode() {
     for (int i = 0; i < 15; i++) {
       highscores[i] = left.entries[i].highscore;
       highscores[i + 15] = right.entries[i].highscore;
     }
     return encode(highscores);
+  }
+
+  public boolean decodeAndUpdate(String encoded) {
+    if (decode(encoded, highscores)) {
+      for (int i = 0; i < 15; i++) {
+        left.updateHighscore(i, highscores[i]);
+        right.updateHighscore(i, highscores[i + 15]);
+      }
+      return true;
+    }
+    return false;
   }
 
   public static String encode(int[] highscores) {

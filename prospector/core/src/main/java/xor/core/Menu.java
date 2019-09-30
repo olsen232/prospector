@@ -2,7 +2,7 @@ package xor.core;
 
 import static xor.core.PixelConstants.*;
 import xor.core.Cells.CellType;
-import xor.core.LoadSave.Loaded;
+import xor.core.LoadSaveMenu.Loaded;
 
 import java.util.List;
 import java.io.ByteArrayInputStream;
@@ -13,6 +13,7 @@ public class Menu {
 
   private ListMenu leftList;
   private ListMenu rightList;
+
   private Direction selectedList;
   private ControlState controlState;
   private MazeController mazeController = new MazeController();
@@ -22,14 +23,16 @@ public class Menu {
   private boolean loadSave = false;
 
   private LevelEditor levelEditor;
-
-  public static Menu INSTANCE;
+  private HighscoresEncoder highscoresEncoder;
+  private LoadSaveMenu loadSaveMenu;
 
   public Menu(ControlState controlState, List<Maze> xorMaxes, List<Maze> procyonMazes) {
     this.controlState = controlState;
     this.leftList = new ListMenu("Mazes of Xor", xorMaxes, Direction.RIGHT);
     this.rightList = new ListMenu("Mazes of Procyon", procyonMazes, Direction.LEFT);
     this.levelEditor = new LevelEditor(LevelEditor.defaultEditorMaze(), controlState);
+    this.highscoresEncoder = new HighscoresEncoder(leftList, rightList);
+    this.loadSaveMenu = new LoadSaveMenu(this, leftList, rightList, highscoresEncoder, controlState);
   }
 
   private boolean exitIntro() {
@@ -43,9 +46,6 @@ public class Menu {
     if (intro && exitIntro()) {
       intro = false;
       menuMs = 0;
-      return;
-    }
-    if (loadSave) {
       return;
     }
 
@@ -77,7 +77,8 @@ public class Menu {
       } else if (controlState.isFreshClickInsideViewport(96, 40, 96, 40)) {
         selectedList = Direction.RIGHT;
       } else if (controlState.isFreshClickInsideViewport(8, 134, 84, 20)) {
-        loadSave = LoadSave.save(leftList, rightList, mazeController, levelEditor.customMazeOrNull());
+        loadSaveMenu.setState(mazeController, levelEditor.customMazeOrNull());
+        loadSave = true;
       } else if (controlState.isFreshClickInsideViewport(99, 134, 84, 20)) {
         levelEditor.setActive(true);
       }
@@ -90,10 +91,10 @@ public class Menu {
     }
   }
 
-  public static void load(String s) {
-    Loaded loaded = LoadSave.load(s, Menu.INSTANCE.leftList, Menu.INSTANCE.rightList);
-    Menu.INSTANCE.load(loaded);
-  }
+  //public static void load(String s) {
+    //Loaded loaded = LoadSave.load(s, Menu.INSTANCE.leftList, Menu.INSTANCE.rightList);
+    //Menu.INSTANCE.load(loaded);
+//  }
   
   public void load(Loaded loaded) {
     loadSave = false;
@@ -141,12 +142,16 @@ public class Menu {
       }
       mazeController.startReplay();
     } else if (controlState.isFreshExitClick()) {
-      if (mazeController.isReplaying()) {
+      if (loadSave) {
+        loadSave = false;
+      } else if (mazeController.isReplaying()) {
         mazeController.abortReplay();
       } else if (mazeController.isActive()) {
         mazeController.setActive(false);
       } else if (levelEditor.isActive()) {
         levelEditor.setActive(false);
+      } else if (selectedList != null) {
+        selectedList = null;
       } else {
         Platform.INSTANCE.exit();
       }
@@ -165,6 +170,9 @@ public class Menu {
         mazeController.setDialogText("Playing level");
         levelEditor.resetViewportSize();
       }
+
+    } else if (loadSave) {
+      loadSaveMenu.tick(ms);
 
     } else {
       menuMs += ms;
@@ -230,7 +238,9 @@ public class Menu {
   }
 
   private void renderMenu(Surface surface) {
-    if (activeList() != null) {
+    if (loadSave) {
+      loadSaveMenu.render(surface);
+    } else if (activeList() != null) {
       activeList().render(surface);
     } else {
       renderMainMenu(surface);

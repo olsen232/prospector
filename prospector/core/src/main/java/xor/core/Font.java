@@ -3,14 +3,12 @@ package xor.core;
 import static xor.core.PixelConstants.*;
 
 public class Font {
-  public static final int GREY_ARGB = 0xffaaaaaa;
-  public static final int BLACK_ARGB = 0xff000000;
-
   public static Image RAW;
   
   public static Font WHITE;
   public static Font YELLOW;
   public static Font BROWN;
+  public static Font BLACK;
 
   public static void startLoading() {
     RAW = Image.load("widefont.png");
@@ -20,6 +18,7 @@ public class Font {
     WHITE = new Font(RAW.tile(FONT_SIZE));
     YELLOW =  new Font(RAW.recolor(MenuGfx.YELLOW).tile(FONT_SIZE));
     BROWN = new Font(RAW.recolor(MenuGfx.BROWN).tile(FONT_SIZE));
+    BLACK = new Font(RAW.recolor(MenuGfx.BLACK).tile(FONT_SIZE));
   }
   
   public final Image[] images;
@@ -28,22 +27,22 @@ public class Font {
     this.images = images;
   }
   
-  public void drawChar(Surface surface, char c, int x, int y) {
+  public void drawChar(DrawImage target, char c, int x, int y) {
     int index = (int) (c - ' ');
     if (index >= 0 && index < images.length) {
-      surface.draw(images[index], x, y);
+      target.draw(images[index], x, y);
     }
   }
   
-  public void singleLine(Surface surface, CharSequence text, int sx, int sy) {
+  public void singleLine(DrawImage target, CharSequence text, int sx, int sy) {
     int x = sx;
     for (int i = 0; i < text.length(); i++) {
-      drawChar(surface, text.charAt(i), x, sy);
+      drawChar(target, text.charAt(i), x, sy);
       x += FONT_SIZE;
     }
   }
 
-  public void leftAligned(Surface surface, CharSequence text, int sx, int sy) {
+  public void leftAligned(DrawImage target, CharSequence text, int sx, int sy) {
     int x = sx, y = sy;
     for (int i = 0; i < text.length(); i++) {
       if (text.charAt(i) == '\n') {
@@ -51,26 +50,26 @@ public class Font {
         y += FONT_SIZE;
         continue;
       }
-      drawChar(surface, text.charAt(i), x, y);
+      drawChar(target, text.charAt(i), x, y);
       x += FONT_SIZE;
     }
   }
 
-  public void centeredSingleLine(Surface surface, CharSequence text, int x, int y) {
-    singleLine(surface, text, x - (text.length() * FONT_SIZE / 2), y - (FONT_SIZE / 2));
+  public void centeredSingleLine(DrawImage target, CharSequence text, int x, int y) {
+    singleLine(target, text, x - (text.length() * FONT_SIZE / 2), y - (FONT_SIZE / 2));
   }
   
-  public void centered(Surface surface, CharSequence text, int sx, int sy) {
+  public void centered(DrawImage target, CharSequence text, int sx, int sy) {
     int y = sy;
     int start = 0;
     for (int i = 0; i < text.length(); i++) {
       if (text.charAt(i) == '\n') {
-        centeredSingleLine(surface, text.subSequence(start, i), sx, y);
+        centeredSingleLine(target, text.subSequence(start, i), sx, y);
         y += FONT_SIZE;
         start = i + 1;
       }
     }
-    centeredSingleLine(surface, text.subSequence(start, text.length()), sx, y);
+    centeredSingleLine(target, text.subSequence(start, text.length()), sx, y);
   }
   
   public void drawTextBox(Surface surface, CharSequence text, int x, int y, int w, int h, int color) {
