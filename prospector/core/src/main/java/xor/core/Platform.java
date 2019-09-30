@@ -34,14 +34,6 @@ public class Platform {
   public Canvas createCanvas(int pixelWidth, int pixelHeight) {
     return new Canvas(createRawCanvas(pixelWidth, pixelHeight));
   }
-
-  public void copyToClipboard(String text) {
-    System.out.println(text);  // Platform can override
-  }
-
-  public String pasteFromClipboard() {
-    return "";  // Platform can override
-  }
   
   public void exit() {
     System.out.println("Exit");  // Platform can override
@@ -52,6 +44,7 @@ public class Platform {
   }
   
   public float findZoom() {
+    if (Boolean.TRUE) return 3;
     IDimension availableArea = availableArea();
     float widthZoom = availableArea.width() / PixelConstants.SCREEN_WIDTH;
     float heightZoom = availableArea.height() / PixelConstants.SCREEN_HEIGHT;
