@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.prospector;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.8.2";
-var $strongName = '16CE8F0873307518859AF7DDAEFB8FE6';
+var $strongName = '46A377AE47E571D376026ED8695C12DB';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -4583,11 +4583,10 @@ var Ljava_lang_AbstractStringBuilder_2_classLit = createForClass(118);
 function $clinit_Boolean(){
   $clinit_Boolean = emptyMethod;
   FALSE = false;
-  TRUE = true;
 }
 
 booleanCastMap = {3:1, 8:1};
-var FALSE, TRUE;
+var FALSE;
 var Ljava_lang_Boolean_2_classLit = createForClass(410);
 function codePointAt(index_0, limit){
   var hiSurrogate, loSurrogate;
@@ -14944,17 +14943,6 @@ defineClass(135, 1, {}, Menu$HighscoreCallback);
 _.mazeIndex = 0;
 var Lxor_core_Menu$HighscoreCallback_2_classLit = createForClass(135);
 var DIGITS, DIGITS_RAW, EDITOR_BUTTONS, GEARS, TITLE;
-function $findZoom(this$static){
-  var availableArea, heightZoom, widthZoom, zoom;
-  if (checkNotNull(($clinit_Boolean() , TRUE)))
-    return 3;
-  availableArea = $screenSize(this$static.raw.graphics);
-  widthZoom = availableArea.width_0 / 320;
-  heightZoom = availableArea.height_0 / 224;
-  zoom = $wnd.Math.min(widthZoom, heightZoom);
-  return $wnd.Math.max(1, zoom);
-}
-
 function $pixelate(this$static){
   var gl20;
   gl20 = this$static.raw.graphics.gl;
@@ -15954,8 +15942,9 @@ _.writeToSystem = function writeToSystem_0(text_0){
 ;
 var Lxor_html_ProspectorHtml$HtmlClipboard_2_classLit = createForClass(193);
 function ProspectorHtml$HtmlPlatform(raw){
+  var availableArea, widthZoom, heightZoom, zoom;
   this.raw = raw;
-  this.zoom = $findZoom(this);
+  this.zoom = (availableArea = $screenSize(this.raw.graphics) , widthZoom = availableArea.width_0 / 320 , heightZoom = availableArea.height_0 / 224 , zoom = $wnd.Math.min(widthZoom, heightZoom) , $wnd.Math.max(1, zoom));
   this.setSize(round_int(320 * this.zoom), round_int(224 * this.zoom));
   INSTANCE_2 = this;
 }

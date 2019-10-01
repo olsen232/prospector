@@ -44,7 +44,6 @@ public class Platform {
   }
   
   public float findZoom() {
-    if (Boolean.TRUE) return 3;
     IDimension availableArea = availableArea();
     float widthZoom = availableArea.width() / PixelConstants.SCREEN_WIDTH;
     float heightZoom = availableArea.height() / PixelConstants.SCREEN_HEIGHT;
