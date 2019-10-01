@@ -165,12 +165,7 @@ public class MazeController {
   private boolean tryAct(Control c) {
     if (isGameOver()) return false;
 
-    boolean result = false;
-    if (c.direction != null) {
-      result = mazeState.tryMove(c.direction);
-    } else if (c == Control.OK) {
-      result = mazeState.trySwitchPlayer();
-    }
+    boolean result = mazeState.tryAct(c);
     if (result) {
       msInCurrentState = 0;
       movesOut.write(c.letter);
@@ -317,7 +312,7 @@ public class MazeController {
   public void replayNextMoves(int numMoves) {
     while (isReplaying() && numMoves > 0) {
       tryStartReplayOneMove();
-      skipToSettled();
+      advanceUntilSettled();
       numMoves--;
     }
   }
@@ -351,7 +346,7 @@ public class MazeController {
     followPlayer();
   }
 
-  private void skipToSettled() {
+  private void advanceUntilSettled() {
     while (!mazeState.isSettled()) {
       mazeState.advanceToNextState();
       followPlayer();

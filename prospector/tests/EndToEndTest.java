@@ -49,9 +49,10 @@ public class EndToEndTest {
         return fail(maze, moves, m, "Unexpected state: " + mazeState.state());
       }
       Control control = Control.forLetter(moves.charAt(m));
-      if (!applyControl(mazeState, control)) {
+      if (!mazeState.tryAct(control)) {
         return fail(maze, moves, m, "Failed to apply control: " + control);
       }
+      mazeState.advanceUntilSettled();
     }
     
     if (mazeState.state() != MazeState.State.LEVEL_COMPLETED) {
@@ -59,14 +60,6 @@ public class EndToEndTest {
     }
 
     return success(maze, "Completed in " + moves.length() + " moves");
-  }
-  
-  private static boolean applyControl(MazeState mazeState, Control control) {
-    boolean result = (control == Control.OK) ? mazeState.trySwitchPlayer() : mazeState.tryMove(control.direction);
-    while (!mazeState.isSettled()) {
-      mazeState.advanceToNextState();
-    }
-    return result;
   }
   
   private static boolean success(Maze maze, String detail) {
@@ -86,7 +79,7 @@ public class EndToEndTest {
     return fail(maze, context + failure);
   }
       
-  private static Map<String, CharSequence> loadSolutions(String in) {
+  public static Map<String, CharSequence> loadSolutions(String in) {
     Map<String, CharSequence> result = new HashMap<>();
 
     String title = "";
@@ -107,7 +100,7 @@ public class EndToEndTest {
     return result;   
   }
   
-  private static String readFile(String filename) throws IOException {
+  public static String readFile(String filename) throws IOException {
     Scanner scanner = new Scanner(new File(filename));
     String text = scanner.useDelimiter("\\A").next();
     scanner.close();

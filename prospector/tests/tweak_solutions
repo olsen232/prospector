@@ -1,0 +1,3 @@
+javac -cp ../core/target/classes/ *.java
+java -cp ../core/target/classes/:. SolutionTweaker
+rm *.class

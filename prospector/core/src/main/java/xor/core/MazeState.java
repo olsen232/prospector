@@ -41,7 +41,7 @@ public class MazeState {
   }
   public static final int NUM_STATES = State.values().length;
 
-  enum AdditionalEvent {
+  public enum AdditionalEvent {
     NONE,
     BALLOON_COLLECTED,
     MAP_COLLECTED,
@@ -51,7 +51,7 @@ public class MazeState {
   }
   public static final int NUM_ADDITIONAL_EVENTS = AdditionalEvent.values().length;
 
-  interface MazeStateListener {
+  public interface MazeStateListener {
     void onStateTransition(State oldState, State newState, AdditionalEvent event);
   }
  
@@ -136,6 +136,10 @@ public class MazeState {
       }
     }
     return -1;
+  }
+
+  public boolean tryAct(Control control) {
+    return (control == Control.OK) ? trySwitchPlayer() : tryMove(control.direction);
   }
 
   public boolean trySwitchPlayer() {
@@ -304,6 +308,12 @@ public class MazeState {
     if (activePlayerIndex != activePlayerIndex) resetPoses();
 
     completeStateTransition(getSettledStateFromActivePlayer());
+  }
+
+  public void advanceUntilSettled() {
+    while (!isSettled()) {
+      advanceToNextState();
+    }
   }
 
   private void beginPlayerInitiatedStateTransition() {

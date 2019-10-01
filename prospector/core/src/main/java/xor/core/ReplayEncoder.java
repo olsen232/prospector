@@ -60,7 +60,7 @@ public final class ReplayEncoder {
     return limitWidth(moves.toString(), 80);
   }
 
-  private static String limitWidth(String in, int width) {
+  public static String limitWidth(String in, int width) {
     if (in.length() <= width) {
       return in + "\n";
     }
