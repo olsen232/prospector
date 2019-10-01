@@ -25,6 +25,7 @@ public final class ReplayEncoder {
       if (looksLikeReplay(line)) {
         if (potentialTitle != null) {
           title = potentialTitle;
+          potentialTitle = null;
           moves.reset();
         }
         decodeMoves(line, moves);

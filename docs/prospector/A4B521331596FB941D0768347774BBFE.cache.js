@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.prospector;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.8.2";
-var $strongName = '46A377AE47E571D376026ED8695C12DB';
+var $strongName = 'A4B521331596FB941D0768347774BBFE';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -15318,6 +15318,7 @@ function decode(lines){
     if (looksLikeReplay(line)) {
       if (potentialTitle != null) {
         title_0 = potentialTitle;
+        potentialTitle = null;
         moves.count = 0;
       }
       decodeMoves(line, moves);

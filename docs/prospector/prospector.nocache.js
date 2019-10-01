@@ -331,7 +331,7 @@ function prospector(){
     }
     var strongName;
     try {
-      strongName = '46A377AE47E571D376026ED8695C12DB';
+      strongName = 'A4B521331596FB941D0768347774BBFE';
       var idx = strongName.indexOf(':');
       if (idx != -1) {
         softPermutationId = parseInt(strongName.substring(idx + 1), 10);
