@@ -2,6 +2,7 @@ import xor.core.AsciiMazeLoader;
 import xor.core.Control;
 import xor.core.Maze;
 import xor.core.MazeState;
+import xor.core.ListMenu;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,12 +64,12 @@ public class EndToEndTest {
   }
   
   private static boolean success(Maze maze, String detail) {
-    System.out.println(maze.title() + " - SUCCESS: " + detail);
+    System.out.println(ListMenu.fixedLength(maze.title(), 19)  + " - SUCCESS: " + detail);
     return true;
   }
   
   private static boolean fail(Maze maze, String failure) {
-    System.out.println(maze.title() + " - FAILED: " + failure);
+    System.out.println(ListMenu.fixedLength(maze.title(), 19) + " -  FAILED: " + failure);
     return false;
   }
   

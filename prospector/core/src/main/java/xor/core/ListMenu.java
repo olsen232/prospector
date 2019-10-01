@@ -109,7 +109,7 @@ public class ListMenu {
     }
   }
 
-  private static String fixedLength(String s, int fixedLength) {
+  public static String fixedLength(String s, int fixedLength) {
     if (s == null) s = "";
     if (s.length() <= fixedLength) {
       return s + SPACES.substring(0, fixedLength - s.length());
