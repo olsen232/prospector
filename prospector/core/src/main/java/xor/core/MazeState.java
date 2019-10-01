@@ -43,6 +43,7 @@ public class MazeState {
 
   public enum AdditionalEvent {
     NONE,
+    FIELD_DESTROYED,
     BALLOON_COLLECTED,
     MAP_COLLECTED,
     OBJECT_STOPPED;
@@ -527,7 +528,15 @@ public class MazeState {
 
   private boolean tryToEmpty(int x, int y, CellType cellType, Direction d) {
     if (isBorder(x, y)) return false;
+    if (!canEmptyCell(cellType, d)) return false;
 
+    if (cellType != CellType.EMPTY) {
+      addAdditionalEvent(AdditionalEvent.FIELD_DESTROYED);
+    }
+    return true;
+  }
+
+  private static boolean canEmptyCell(CellType cellType, Direction d) {
     switch (cellType) {
       case EMPTY: return true;
       case FIELD_V: return d.isVertical();
