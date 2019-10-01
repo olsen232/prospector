@@ -54,7 +54,11 @@ public final class AsciiMazeLoader {
   }
 
   public static Maze loadMaze(String string) {
-    return loadMaze(string.split("\n"), 0);
+    return loadMaze(string.split("\n"));
+  }
+
+  public static Maze loadMaze(String[] lines) {
+    return loadMaze(lines, 0);
   }
 
   public static Maze loadMaze(String[] lines, int l) {

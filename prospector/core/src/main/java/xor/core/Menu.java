@@ -32,7 +32,7 @@ public class Menu {
     this.rightList = new ListMenu("Mazes of Procyon", procyonMazes, Direction.LEFT);
     this.levelEditor = new LevelEditor(LevelEditor.defaultEditorMaze(), controlState);
     this.highscoresEncoder = new HighscoresEncoder(leftList, rightList);
-    this.loadSaveMenu = new LoadSaveMenu(this, leftList, rightList, highscoresEncoder, controlState);
+    this.loadSaveMenu = new LoadSaveMenu(this, highscoresEncoder, controlState);
   }
 
   private boolean exitIntro() {
@@ -91,11 +91,6 @@ public class Menu {
     }
   }
 
-  //public static void load(String s) {
-    //Loaded loaded = LoadSave.load(s, Menu.INSTANCE.leftList, Menu.INSTANCE.rightList);
-    //Menu.INSTANCE.load(loaded);
-//  }
-  
   public void load(Loaded loaded) {
     loadSave = false;
     if (loaded == null) {
@@ -104,19 +99,34 @@ public class Menu {
     if (loaded.customLevel != null) {
       levelEditor = new LevelEditor(loaded.customLevel, controlState);
       levelEditor.setActive(true);
-    }
-    if (loaded.replay != null) {
-      if (loaded.selectedList != null) {
-        selectedList = loaded.selectedList;
-        activeList().setSelectedIndex(loaded.mazeIndex);
-        mazeController = new MazeController(activeList().selected(), controlState,
-            new HighscoreCallback(selectedList, activeList().selectedIndex()));  
-      } else {
+
+      if (loaded.customLevel.title().equals(loaded.replayTitle)) {
         mazeController = new MazeController(loaded.customLevel, controlState, null);
+        mazeController.movesOut = loaded.replayMoves;
+        mazeController.startReplay();
+        return;
       }
-      mazeController.movesOut = loaded.replay;
-      mazeController.startReplay();
     }
+    
+    if (loaded.replayTitle != null && selectMazeByTitle(loaded.replayTitle)) {
+      mazeController = new MazeController(activeList().selected(), controlState,
+          new HighscoreCallback(selectedList, activeList().selectedIndex()));
+      mazeController.movesOut = loaded.replayMoves;
+      if (!levelEditor.isActive()) {
+        mazeController.startReplay();
+      }
+    }
+  }
+
+  private boolean selectMazeByTitle(String title) {
+    if (leftList.selectMazeByTitle(title)) {
+      selectedList = Direction.LEFT;
+      return true;
+    } else if (rightList.selectMazeByTitle(title)) {
+      selectedList = Direction.RIGHT;
+      return true;
+    }
+    return false;
   }
 
   private void handleGlobalControls() {

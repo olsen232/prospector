@@ -88,6 +88,16 @@ public class ListMenu {
     return entries[selectedIndex].maze;
   }
 
+  public boolean selectMazeByTitle(String title) {
+    for (int i = 0; i < NUM_LEVELS_PER_SCREEN; i++) {
+      if (entries[i].maze.title().equals(title)) {
+        this.selectedIndex = i;
+        return true;
+      }
+    }
+    return false;
+  }
+
   public void updateHighscore(int highscore) {
     updateHighscore(selectedIndex, highscore);
   }

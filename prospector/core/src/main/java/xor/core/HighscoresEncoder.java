@@ -5,10 +5,10 @@ import java.util.Arrays;
 public class HighscoresEncoder {
 
   private static int START_CHECKSUM = 4567;
-  private static int[] highscores = new int[30];
 
   private final ListMenu left;
   private final ListMenu right;
+  private int[] highscores = new int[30];
 
   public HighscoresEncoder(ListMenu left, ListMenu right) {
     this.left = left;
@@ -23,8 +23,17 @@ public class HighscoresEncoder {
     return encode(highscores);
   }
 
+  public boolean decodeAndUpdate(String[] lines) {
+    boolean success = false;
+    for (String line : lines) {
+      if (line.isEmpty()) continue;
+      success |= decodeAndUpdate(line);
+    }
+    return success;
+  }
+
   public boolean decodeAndUpdate(String encoded) {
-    if (decode(encoded, highscores)) {
+    if (decode(encoded)) {
       for (int i = 0; i < 15; i++) {
         left.updateHighscore(i, highscores[i]);
         right.updateHighscore(i, highscores[i + 15]);
@@ -76,40 +85,47 @@ public class HighscoresEncoder {
     }
   }
 
-  public static boolean decode(String encoded, int[] highscores) {
+  private boolean decode(String encoded) {
+    try {
+      decodeOrThrow(encoded);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  private void decodeOrThrow(String encoded) {
+    if (encoded.length() > 100) throw new IllegalArgumentException("Too long");
+
     Arrays.fill(highscores, 9999);
+
     int out = 0;
     int checkSum = START_CHECKSUM;
     int h;
     for (int i = 0; i < encoded.length(); ) {
-      int x = safeCharAsInt(encoded, i++);
+      int x = decodeChar(encoded, i++);
       if (x <= 15) {
         out += x;
         checkSum ^= x;
       } else {
         if ((x & 0x20) != 0) {
-          h = (x & ~0x20) << 6 | safeCharAsInt(encoded, i++);
+          h = (x & ~0x20) << 6 | decodeChar(encoded, i++);
         } else {
-          h = ((x & ~0x30) << 12) | (safeCharAsInt(encoded, i++) << 6) | safeCharAsInt(encoded, i++);
+          h = ((x & ~0x30) << 12) | (decodeChar(encoded, i++) << 6) | decodeChar(encoded, i++);
         }
         if (h == checkSum && i == encoded.length()) {
-          return true;
+          return;
         } else if (out < highscores.length) {
           highscores[out++] = Ints.clamp(h, 0, 9999);
           checkSum ^= h;
         }
       }
     }
-    return false;
+    throw new IllegalArgumentException("Checksum failed");
   }
 
-  private static int safeCharAsInt(String s, int index) {
-    return asInt(safeCharAt(s, index));
-  }
-          
-  private static char safeCharAt(String s, int index) {
-    if (index >= s.length()) return ' ';
-    return s.charAt(index);
+  private static int decodeChar(String s, int index) {
+    return asInt(s.charAt(index));
   }
 
   private static int asInt(char c) {
@@ -119,20 +135,28 @@ public class HighscoresEncoder {
       return (int) (c - 'a' + 26);
     } else if (c >= '0' && c <= '9') {
       return (int) (c - '0' + 52);
-    } else {
-      return c == '+' ? 62 : 63;
+    } else if (c == '+') {
+      return 62;
+    } else if (c == '/') {
+      return 63;
     }
+    throw new IllegalArgumentException("Invalid char: " + c);
   }
 
   private static char asChar(int i) {
-    if (i < 26) {
-      return (char) (i + 'A');
-    } else if (i < 52) {
-      return (char) (i - 26 + 'a');
-    } else if (i < 62) {
-      return (char) (i - 52 + '0');
-    } else {
-      return i == 62 ? '+' : '/';
+    if (i >= 0) {
+      if (i < 26) {
+        return (char) (i + 'A');
+      } else if (i < 52) {
+        return (char) (i - 26 + 'a');
+      } else if (i < 62) {
+        return (char) (i - 52 + '0');
+      } else if (i == 62) {
+        return '+';
+      } else if (i == 63) {
+        return '/';
+      }
     }
+    throw new IllegalArgumentException("Invalid int: " + i);
   }
 }

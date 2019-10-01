@@ -7,8 +7,6 @@ import java.io.ByteArrayOutputStream;
 
 public class LoadSaveMenu {
   private final Menu mainMenu;
-  private final ListMenu left;
-  private final ListMenu right;
   private final HighscoresEncoder highscoresEncoder;
   private final ControlState controlState;
 
@@ -20,10 +18,8 @@ public class LoadSaveMenu {
   private Image inverse;
   private int inverseMs = 0;
 
-  public LoadSaveMenu(Menu mainMenu, ListMenu left, ListMenu right, HighscoresEncoder highscoresEncoder, ControlState controlState) {
+  public LoadSaveMenu(Menu mainMenu, HighscoresEncoder highscoresEncoder, ControlState controlState) {
     this.mainMenu = mainMenu;
-    this.left = left;
-    this.right = right;
     this.highscoresEncoder = highscoresEncoder;
     this.controlState = controlState;
     Clipboard.INSTANCE.addListener(clipboardSlot);
@@ -40,9 +36,9 @@ public class LoadSaveMenu {
       highscores = "Highscores:\n" + highscores + "\n\n";
     }
   
-    String replay = "";  
-    if (mazeController.movesOut != null && mazeController.movesOut.size() > 0) {
-      replay = "Replay:\n" + mazeController.maze().title() + "\n" + limitWidth(mazeController.movesOut.toString(), 80) + "\n";
+    String replay = ReplayEncoder.encode(mazeController); 
+    if (!replay.isEmpty()) {
+      replay = "Replay:\n" + replay + "\n\n";
     }
 
     String maze = "";
@@ -52,19 +48,6 @@ public class LoadSaveMenu {
 
     String state = highscores + replay + maze;
     setState(state);
-  }
-
-  private static String limitWidth(String in, int width) {
-    if (in.length() <= width) {
-      return in + "\n";
-    }
-    StringBuilder result = new StringBuilder();
-    for (int begin = 0; begin < in.length(); ) {
-      int end = Math.min(begin + width, in.length());
-      result.append(in.substring(begin, end)).append('\n');
-      begin = end;
-    }
-    return result.toString();
   }
 
   public void setState(String state) {
@@ -118,78 +101,17 @@ public class LoadSaveMenu {
     if (state == null || state.isEmpty()) {
       return null;
     }
-    String[] parts = state.split("\n");
 
-    String levelName = "";
-    String lastLevelName = "";
-    String replay = "";
-    String lastReplay = "";
-    for (int i = 0; i < parts.length; i++) {
-      parts[i] = parts[i].trim();
-       
-      if (!parts[i].isEmpty() && highscoresEncoder.decodeAndUpdate(parts[i])) {
-        continue;
-      }
-
-      if (!parts[i].isEmpty() && looksLikeReplay(parts[i])) {
-        lastReplay += makeReplay(parts[i]);
-        levelName = lastLevelName;
-        replay = lastReplay;
-      } else if (!parts[i].isEmpty()) {
-        lastLevelName = parts[i];
-        lastReplay = "";
-      }
+    String[] lines = state.split("\n");
+    for (int i = 0; i < lines.length; i++) {
+      lines[i] = lines[i].trim();
     }
+ 
+    highscoresEncoder.decodeAndUpdate(lines);
+    ReplayEncoder.Replay replay = ReplayEncoder.decode(lines);
+    Maze customLevel = AsciiMazeLoader.loadMaze(lines);
 
-    Maze customLevel = AsciiMazeLoader.loadMaze(parts, 0);
-
-    Loaded loaded = new Loaded();
-    loaded.customLevel = customLevel;
-
-    ByteArrayOutputStream baos = null;
-    if (replay.length() > 0) {
-      baos = new ByteArrayOutputStream();
-      baos.write(replay.getBytes(), 0, replay.length());
-    }
-    if (customLevel != null && customLevel.title().equals(levelName)) {
-      loaded.selectedList = null;
-      loaded.mazeIndex = -1;
-      loaded.replay = baos;
-    }
-
-    for (int i = 0; i < 15; i++) {
-      if (left.entries[i].maze.title().equals(levelName)) {
-        loaded.selectedList = Direction.LEFT;
-        loaded.mazeIndex = i;
-        loaded.replay = baos;
-      } else if (right.entries[i].maze.title().equals(levelName)) {
-        loaded.selectedList = Direction.RIGHT;
-        loaded.mazeIndex = i;
-        loaded.replay = baos;
-      }
-    }
-
-    return loaded;
-  }
-
-  public static final String REPLAY_CHARS = "ULDRXuldrx";
-
-  public static boolean looksLikeReplay(String s) {
-    for (int i = 0; i < Math.min(10, s.length()); i++) {
-      if (REPLAY_CHARS.indexOf(s.charAt(i)) == -1) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public static String makeReplay(String s) {
-    StringBuilder result = new StringBuilder();
-    for (int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
-      if (REPLAY_CHARS.indexOf(c) != -1) result.append(c);
-    }
-    return result.toString();
+    return new Loaded(replay.title, replay.moves, customLevel);
   }
 
   public void render(Surface surface) {
@@ -229,9 +151,14 @@ public class LoadSaveMenu {
   };
 
   public static class Loaded {
-    public Direction selectedList;
-    public int mazeIndex;
-    public Maze customLevel;
-    public ByteArrayOutputStream replay;
+    Loaded(String replayTitle, ByteArrayOutputStream replayMoves, Maze customLevel) {
+      this.replayTitle = replayTitle;
+      this.replayMoves = replayMoves;
+      this.customLevel = customLevel;
+    }
+
+    public final String replayTitle;
+    public final ByteArrayOutputStream replayMoves;
+    public final Maze customLevel;
   }
 }

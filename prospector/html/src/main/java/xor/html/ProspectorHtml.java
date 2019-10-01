@@ -62,7 +62,6 @@ public class ProspectorHtml implements EntryPoint {
         @xor.core.Clipboard::onSystemCopyEvent()();
       });
       window.top.document.body.addEventListener('paste', function(e) {
-        alert(e);
         @xor.core.Clipboard::onSystemPasteEvent(Ljava/lang/String;)(e.clipboardData.getData('text'));
       });
     }-*/;
