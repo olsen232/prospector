@@ -38,8 +38,7 @@ public class SolutionTweaker {
     NoopListener noopListener = new NoopListener();
     mazeState.mazeStateListeners.add(noopListener);
     
-    boolean lastNoop = true;
-    Control lastControl = Control.OK;
+    int noopCount = 0;
 
     for (int m = 0; m < moves.length(); m++) {
       if (mazeState.state() != MazeState.State.WAITING_FOR_PLAYER) return;
@@ -52,13 +51,11 @@ public class SolutionTweaker {
       mazeState.tryAct(control);
       mazeState.advanceUntilSettled();
 
-      boolean noop = noopListener.noop;
-      if (noop && lastNoop && opposite(control, lastControl)) {
+      noopCount = noopListener.noop ? noopCount + 1 : 0;
+      if (noopCount >= 2 && opposite(control, Control.forLetter(moves.charAt(m - 1)))) {
         tweaked.setLength(tweaked.length() - 2);
+        noopCount -= 2;
       }
-      
-      lastNoop = noop;
-      lastControl = control;
     }
     
     if (mazeState.state() != MazeState.State.LEVEL_COMPLETED) return;
