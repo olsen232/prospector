@@ -12,13 +12,25 @@ public class Canvas implements DrawImage {
   }
   
   public void clear() { raw.clear(); }
+
+  public void translate(int x, int y) {
+    raw.translate(x, y);
+  }
   
   public void scale(int x, int y) {
     raw.scale(x, y);
   }
   
   public void draw(Image image, int x, int y) {
-    raw.draw(image.raw, x, y);
+    if (image != null) {
+      raw.draw(image.raw(), x, y);
+    }
+  }
+  
+  public void drawTile(Image tile, int x, int y) {
+    if (tile != null) {
+      raw.draw(tile.raw(), x * TILE_SIZE, y * TILE_SIZE);
+    }
   }
   
   public void fillRect(int x, int y, int w, int h, int color) {

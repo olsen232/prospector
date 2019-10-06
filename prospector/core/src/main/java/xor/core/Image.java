@@ -3,7 +3,7 @@ package xor.core;
 public class Image implements LoadTracker.Loadable {
   public static final LoadTracker LOAD_TRACKER = new LoadTracker();
 
-  public final playn.core.Image raw;
+  protected final playn.core.Image raw;
 
   public Image(playn.core.Image raw) {
     this.raw = raw;

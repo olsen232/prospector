@@ -3,6 +3,8 @@ package xor.core;
 import static xor.core.PixelConstants.*;
 
 import xor.core.Cells.CellType;
+import xor.core.MazeState.AdditionalEvent;
+import xor.core.MazeState.MazeStateListener;
 import xor.core.MazeState.State;
 import xor.core.Player.PlayerState;
 import xor.core.Player.Pose;
@@ -11,7 +13,9 @@ import xor.core.Sprites.RollDirection;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class InGameMazeRenderer extends BaseMazeRenderer {
+public class InGameMazeRenderer extends BaseMazeRenderer implements MazeStateListener {
+
+  public static final boolean USE_CACHE = true;
 
   public final MazeState mazeState;
   public final Image[] wallTiles;
@@ -28,6 +32,17 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
     this.mazeState = mazeState;
     this.wallTiles = wallTiles;
     this.floorTiles = floorTiles;
+    mazeState.mazeStateListeners.add(this);
+  }
+  
+  @Override
+  public void onStateTransition(State oldState, State newState, AdditionalEvent event) {
+    if ((oldState == State.WAITING_FOR_PLAYER || oldState == State.PLAYER_MOVING) &&
+        (newState == State.WAITING_FOR_PLAYER || newState == State.PLAYER_MOVING) &&
+        (event == AdditionalEvent.NONE)) {
+      return;
+    }
+    this.cache.invalidate();
   }
 
   @Override
@@ -144,12 +159,12 @@ public class InGameMazeRenderer extends BaseMazeRenderer {
   }
 
   @Override
-  protected Image[] getThemedFloorTiles() {
+  public Image[] getThemedFloorTiles() {
     return floorTiles;
   }
 
   @Override
-  protected Image[] getThemedWallTiles() {
+  public Image[] getThemedWallTiles() {
     return wallTiles;
   }
 }

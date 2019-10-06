@@ -5,11 +5,14 @@ import static xor.core.PixelConstants.*;
 import xor.core.Cells.CellType;
 
 public class BaseMazeRenderer {
+  public static final boolean CACHE_ENABLED = Boolean.TRUE;
 
-  protected Maze maze;
+  public final Maze maze;
+  public final RenderCache cache;
 
   public BaseMazeRenderer(Maze maze) {
     this.maze = maze;
+    this.cache = new RenderCache(maze);
   }
 
   public void renderAll(int percent, Surface surface) {
@@ -41,7 +44,15 @@ public class BaseMazeRenderer {
     }
   }
 
-  private void renderRect(int startX, int startY, int stopX, int stopY, Surface surface) {
+  public void renderRect(int startX, int startY, int stopX, int stopY, Surface surface) {
+    if (CACHE_ENABLED) {
+      surface.draw(cache.getRender(this), 0, 0);
+    } else {
+      renderRectNoCache(startX, startY, stopX, stopY, surface);
+    }
+  }
+  
+  public void renderRectNoCache(int startX, int startY, int stopX, int stopY, DrawImage target) {
     for (int x = startX; x < stopX; x++) {
       for (int y = startY; y < stopY; y++) {
         if (!maze().isValidXY(x, y)) {
@@ -50,16 +61,16 @@ public class BaseMazeRenderer {
 
         int cell = maze().get(x, y);
         if (drawFloor(x, y)) {
-          surface.drawTile(getFloorTile(cell), x, y);
+          target.drawTile(getFloorTile(cell), x, y);
         }
         
         if (Cells.isWall(cell)) {
           if (drawWall(x, y)) {
-            surface.drawTile(getWallTile(cell), x, y);
+            target.drawTile(getWallTile(cell), x, y);
           }
         } else {
           if (drawSprite(x, y)) {
-            surface.drawTile(getSpriteTile(cell), x, y);
+            target.drawTile(getSpriteTile(cell), x, y);
           }
         }
       }
@@ -97,7 +108,7 @@ public class BaseMazeRenderer {
     // Nothing required.
   }
 
-  protected Image[] getThemedFloorTiles() {
+  public Image[] getThemedFloorTiles() {
     return Tiles.FLOOR_TILES[maze().floorTheme];
   }
 
@@ -105,7 +116,7 @@ public class BaseMazeRenderer {
     return getThemedFloorTiles()[Cells.floorType(cell)];
   }
 
-  protected Image[] getThemedWallTiles() {
+  public Image[] getThemedWallTiles() {
     return Tiles.WALL_TILES[maze().wallTheme];
   }
 

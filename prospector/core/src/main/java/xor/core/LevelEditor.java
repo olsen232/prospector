@@ -88,6 +88,7 @@ public class LevelEditor {
           maze.updateCellType(mazeX, mazeY, paintCellType);
         }
         maze.updateNeighbouringWalls(mazeX, mazeY);
+        mazeRenderer.cache.invalidate();
         mapRenderer.updateMap();
       }
     }
@@ -190,6 +191,8 @@ public class LevelEditor {
       maze.floorTheme = maze.wallTheme = Ints.modulo(maze.wallTheme + delta, Tiles.NUM_THEMES);
     }
     stateIconOffset = Sprites.stateIconOffset(Cells.cellType(paintCell));
+    mazeRenderer.cache.invalidate();
+    paletteRenderer.cache.invalidate();
   }
 
   public void resetViewportSize() {
@@ -287,12 +290,12 @@ public class LevelEditor {
     }
 
     @Override
-    protected Image[] getThemedFloorTiles() {
+    public Image[] getThemedFloorTiles() {
       return mazeRenderer.getThemedFloorTiles();
     }
 
     @Override
-    protected Image[] getThemedWallTiles() {
+    public Image[] getThemedWallTiles() {
       return mazeRenderer.getThemedWallTiles();
     }
   }
