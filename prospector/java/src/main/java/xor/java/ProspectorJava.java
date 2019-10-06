@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
 public class ProspectorJava {
 
   public static void main (String[] args) {
-    new JavaClipboard(Toolkit.getDefaultToolkit().getSystemClipboard());
+    new JavaClipboard();
 
     LWJGLPlatform.Config config = new LWJGLPlatform.Config();
     config.appName = "Prospector in the Mazes of XOR";
@@ -46,7 +46,7 @@ public class ProspectorJava {
         f.setAccessible(true);
         Scale temp = (Scale) f.get(raw.graphics());
         ((playn.java.JavaGraphics) raw.graphics()).setSize(width, height, false);
-        f.set(raw.graphics(), temp);
+        //f.set(raw.graphics(), temp);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -82,17 +82,21 @@ public class ProspectorJava {
   static class JavaClipboard extends Clipboard {
     public final java.awt.datatransfer.Clipboard raw;
 
-    JavaClipboard(java.awt.datatransfer.Clipboard raw) {
-      this.raw = raw;
+    JavaClipboard() {
+      this.raw = initRaw();
     }
 
     @Override
     public void writeToSystem(String text) {
-      raw.setContents(new StringSelection(text), null);
+      if (raw != null) {
+        raw.setContents(new StringSelection(text), null);
+      }
     }
 
     @Override
-    public boolean canWriteToSystem() { return true; }
+    public boolean canWriteToSystem() { 
+      return raw != null;
+    }
 
     @Override
     public String readFromSystem() {
@@ -104,6 +108,16 @@ public class ProspectorJava {
     }
 
     @Override
-    public boolean canReadFromSystem() { return true; }
+    public boolean canReadFromSystem() {
+      return raw != null;
+    }
+    
+    private static java.awt.datatransfer.Clipboard initRaw() {
+      if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+        return null;  // Toolkit calls breaks everything on my Macbook.
+      }
+      return Toolkit.getDefaultToolkit().getSystemClipboard();
+    }
   }
+  
 }

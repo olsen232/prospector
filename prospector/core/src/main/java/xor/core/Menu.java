@@ -77,6 +77,7 @@ public class Menu {
       } else if (controlState.isFreshClickInsideViewport(96, 40, 96, 40)) {
         selectedList = Direction.RIGHT;
       } else if (controlState.isFreshClickInsideViewport(8, 134, 84, 20)) {
+        if (!Clipboard.INSTANCE.canWriteToSystem()) return;
         loadSaveMenu.setState(mazeController, levelEditor.customMazeOrNull());
         loadSave = true;
       } else if (controlState.isFreshClickInsideViewport(99, 134, 84, 20)) {
