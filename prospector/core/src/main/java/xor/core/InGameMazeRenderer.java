@@ -99,7 +99,7 @@ public class InGameMazeRenderer extends BaseMazeRenderer implements MazeStateLis
   }
 
   @Override
-  public void drawAnimations(int percent, Surface surface) {
+  public void renderAnimations(int percent, Surface surface) {
     drawActivePlayer(percent, surface);
     drawActiveObject(percent, surface);
   }

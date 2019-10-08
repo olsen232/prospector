@@ -99,4 +99,8 @@ public class Image implements LoadTracker.Loadable {
   public void updateTexture() {
     raw.updateTexture();
   }
+  
+  public void close() {
+    //raw.close();
+  }
 }

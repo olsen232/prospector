@@ -33,7 +33,7 @@ public class Canvas implements DrawImage {
     }
   }
   
-  public void fillRect(int x, int y, int w, int h, int color) {
+  public void fillRect(float x, float y, float w, float h, int color) {
     raw.setFillColor(color);
     raw.fillRect(x, y, w, h);
   }

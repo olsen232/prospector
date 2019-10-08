@@ -12,7 +12,7 @@ public class LevelEditor {
 
   public final ControlState controlState;
   public final Viewport viewport;
-  public final BaseMazeRenderer mazeRenderer;
+  public final EditorMazeRenderer mazeRenderer;
   public final PaletteRenderer paletteRenderer;
   public final MapRenderer mapRenderer;
 
@@ -40,9 +40,10 @@ public class LevelEditor {
     this.paletteMaze = paletteMaze();
     this.controlState = controlState;
     this.viewport = new Viewport(maze, viewportSize());
-    this.mazeRenderer = new BaseMazeRenderer(maze);
+    this.mazeRenderer = new EditorMazeRenderer(maze);
     this.paletteRenderer = new PaletteRenderer(paletteMaze);
     this.mapRenderer = new MapRenderer(maze);
+    updateGridlines();
   }
 
   public void handleControls() {
@@ -95,8 +96,10 @@ public class LevelEditor {
 
     if (controlState.isFresh(ExtraControl.ZOOM_IN)) {
       adjustViewportSize(-1);
+      updateGridlines();
     } else if (controlState.isFresh(ExtraControl.ZOOM_OUT)) {
       adjustViewportSize(1);
+      updateGridlines();
     }
 
     if (controlState.isFresh(Control.LEFT) && controlState.isPressed(ExtraControl.SPECIAL)) {
@@ -154,7 +157,7 @@ public class LevelEditor {
         ? Ints.clamp(100 * (msSinceLastMove + deltaMs) / MS_PER_MOVE, 0, 99)
         : 0;
     
-    mazeRenderer.render(viewport, percent, surface, /*gridlines=*/ true);
+    mazeRenderer.renderRect(viewport, percent, surface);
     if (showPalette) {
       surface.translate(5 * TILE_SIZE, 0);
       surface.fillRect(0, 0, 3 * TILE_SIZE, 8 * TILE_SIZE, 0xff000000);
@@ -207,6 +210,11 @@ public class LevelEditor {
 
   private int viewportSize() {
     return VIEWPORT_SIZES[viewportSizeIndex];
+  }
+  
+  private void updateGridlines() {
+    mazeRenderer.gridlines = viewportSize() <= 16;
+    mazeRenderer.cache.invalidate();
   }
 
   private Image getFloorTile(int cell) {

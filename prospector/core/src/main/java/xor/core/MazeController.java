@@ -390,7 +390,7 @@ public class MazeController {
   }
 
   public void render(Surface surface, int deltaMs) {
-    mazeRenderer.render(getActiveViewport(), percent(deltaMs), surface);
+    mazeRenderer.renderRect(getActiveViewport(), percent(deltaMs), surface);
     renderDialog(surface);
   }
 

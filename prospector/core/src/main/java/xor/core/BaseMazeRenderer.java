@@ -5,54 +5,70 @@ import static xor.core.PixelConstants.*;
 import xor.core.Cells.CellType;
 
 public class BaseMazeRenderer {
-  public static final boolean CACHE_ENABLED = Boolean.TRUE;
+  public static final boolean CACHE_ENABLED = Boolean.FALSE;
 
   public final Maze maze;
   public final RenderCache cache;
-
+  
   public BaseMazeRenderer(Maze maze) {
-    this.maze = maze;
-    this.cache = new RenderCache(maze);
-  }
-
-  public void renderAll(int percent, Surface surface) {
-    renderRect(0, 0, maze().width, maze().height, surface);
-    drawAnimations(percent, surface);
-  }
-
-  public void render(Viewport viewport, int percent, Surface surface) {
-    render(viewport, percent, surface, false);
-  }
- 
-  public void render(Viewport viewport, int percent, Surface surface, boolean renderGridlines) {
-    surface.saveTx();
-    try {
-      float scale = 1f * VIEWPORT_SIZE_TILES / viewport.size();
-      surface.scale(scale, scale);
-
-      int offsetX = -viewport.movingOriginXInPx(percent);
-      int offsetY = -viewport.movingOriginYInPx(percent);
-      surface.translate(offsetX, offsetY);
-
-      renderRect(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
-      if (renderGridlines && scale >= 0.5f) {
-        renderGridlines(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
-      }
-      drawAnimations(percent, surface);
-    } finally {
-      surface.restoreTx();
-    }
-  }
-
-  public void renderRect(int startX, int startY, int stopX, int stopY, Surface surface) {
-    if (CACHE_ENABLED) {
-      surface.draw(cache.getRender(this), 0, 0);
-    } else {
-      renderRectNoCache(startX, startY, stopX, stopY, surface);
-    }
+    this(maze, new RenderCache());
   }
   
-  public void renderRectNoCache(int startX, int startY, int stopX, int stopY, DrawImage target) {
+  public BaseMazeRenderer(Maze maze, RenderCache cache) {
+    this.maze = maze;
+    this.cache = cache;
+    this.cache.setSize(maze);
+  }
+
+  // Render the whole maze including animations
+  public void renderAll(int percent, Surface surface) {
+    renderAllStatic(surface);
+    renderAnimations(percent, surface);
+  }
+
+  // Render some part of the maze, including animations
+  public void renderRect(Viewport viewport, int percent, Surface surface) {
+    surface.saveTx();
+    float scale = 1f * VIEWPORT_SIZE_TILES / viewport.size();
+    surface.scale(scale, scale);
+
+    int offsetX = -viewport.movingOriginXInPx(percent);
+    int offsetY = -viewport.movingOriginYInPx(percent);
+    surface.translate(offsetX, offsetY);
+
+    renderRectStatic(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
+    //if (renderGridlines && scale >= 0.5f) {
+    //  renderGridlines(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
+    //}
+    renderAnimations(percent, surface);
+    surface.restoreTx();
+  }
+  
+  // Render the whole maze without animations
+  public void renderAllStatic(DrawImage target) {
+    if (CACHE_ENABLED) {
+      target.draw(cache.renderAllStatic(this), 0, 0);
+    } else {
+      renderAllStaticNoCache(target);
+    }
+  }
+
+  // Render some part of the maze without animations
+  public void renderRectStatic(int startX, int startY, int stopX, int stopY, DrawImage target) {
+    if (CACHE_ENABLED) {
+      target.draw(cache.renderAllStatic(this), 0, 0);
+    } else {
+      renderRectStaticNoCache(startX, startY, stopX, stopY, target);
+    }
+  }
+
+  // Render the whole maze without animations and without using the cache
+  public void renderAllStaticNoCache(DrawImage target) {
+    renderRectStaticNoCache(0, 0, maze.width, maze.height, target);
+  }
+  
+  // Render some part of the maze without animations and without using the cache
+  public void renderRectStaticNoCache(int startX, int startY, int stopX, int stopY, DrawImage target) {
     for (int x = startX; x < stopX; x++) {
       for (int y = startY; y < stopY; y++) {
         if (!maze().isValidXY(x, y)) {
@@ -103,8 +119,12 @@ public class BaseMazeRenderer {
   protected boolean drawSprite(int x, int y) {
     return true;
   }
+  
+  public void renderDecorations(Surface surface) {
+    // Nothing required.
+  }
 
-  public void drawAnimations(int percent, Surface surface) {
+  public void renderAnimations(int percent, Surface surface) {
     // Nothing required.
   }
 
