@@ -37,9 +37,6 @@ public class BaseMazeRenderer {
     surface.translate(offsetX, offsetY);
 
     renderRectStatic(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
-    //if (renderGridlines && scale >= 0.5f) {
-    //  renderGridlines(viewport.minXIncDelta(), viewport.minYIncDelta(), viewport.maxXIncDelta(), viewport.maxYIncDelta(), surface);
-    //}
     renderAnimations(percent, surface);
     surface.restoreTx();
   }
@@ -90,17 +87,6 @@ public class BaseMazeRenderer {
           }
         }
       }
-    }
-  }
-
-  private void renderGridlines(int startX, int startY, int stopX, int stopY, Surface surface) {
-    int height = (stopY - startY) * TILE_SIZE;
-    for (int x = startX; x < stopX; x++) {
-      surface.fillRect(x * TILE_SIZE, startY * TILE_SIZE, 1, height, 0x88ffffff);
-    }
-    int width = (stopX - startX) * TILE_SIZE;
-    for (int y = startY; y < stopY; y++) {
-      surface.fillRect(startX * TILE_SIZE, y * TILE_SIZE, width, 1, 0x88ffffff);
     }
   }
 

@@ -15,6 +15,7 @@ public class MazeState {
   private static final boolean BALLOON_CHEAT = Boolean.FALSE;
 
   public enum State {
+    LEVEL_STARTED,
     WAITING_FOR_PLAYER,
     PLAYER_MOVING        (250),
     PLAYER_PUSHING_OBJECT(250),
@@ -46,6 +47,7 @@ public class MazeState {
     FIELD_DESTROYED,
     BALLOON_COLLECTED,
     MAP_COLLECTED,
+    DECOY_COLLECTED,
     OBJECT_STOPPED;
 
     public final int code = this.ordinal();
@@ -112,7 +114,7 @@ public class MazeState {
     }
     activePlayerIndex = findNextPlayerWithState(0, PlayerState.ALIVE);
     state = getSettledStateFromActivePlayer();
-    previousState = state;
+    previousState = State.LEVEL_STARTED;
     additionalEvent = AdditionalEvent.NONE;
   }
 
@@ -651,6 +653,7 @@ public class MazeState {
         return true;
       case DECOY:
         pendingDecoys++;
+        addAdditionalEvent(AdditionalEvent.DECOY_COLLECTED);
         return true;
       case MAP_NW:
       case MAP_NE:
