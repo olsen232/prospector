@@ -35,7 +35,7 @@ public class MazeController {
   private boolean active = false;
   private boolean wasActive = false;
 
-  public GameOverCallback callback;
+  public final GameOverCallback callback;
 
   interface GameOverCallback {
     void onGameOver(int newHighscore);
@@ -301,7 +301,6 @@ public class MazeController {
     if (isGameOver() && callback != null) {
       callback.onGameOver(
           mazeState.state() == State.LEVEL_COMPLETED ? movesOut.size() : Integer.MAX_VALUE);
-      callback = null;
     }
     if (isGameOver() && isReplaying()) {
       lastReplayLength = movesOut.size();
