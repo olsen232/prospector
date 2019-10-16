@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.prospector;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.8.2";
-var $strongName = '709A0D255B03C322E0D27C0E767033AF';
+var $strongName = '57B5BD9A6227D500313D57E86934E53F';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -13931,10 +13931,7 @@ function $centerOnPlayers(this$static){
 }
 
 function $checkForGameOver(this$static){
-  if ((this$static.mazeState.state == ($clinit_MazeState$State() , LEVEL_FAILED) || this$static.mazeState.state == LEVEL_COMPLETED) && !!this$static.callback) {
-    $onGameOver(this$static.callback, this$static.mazeState.state == LEVEL_COMPLETED?this$static.movesOut.count:$intern_0);
-    this$static.callback = null;
-  }
+  (this$static.mazeState.state == ($clinit_MazeState$State() , LEVEL_FAILED) || this$static.mazeState.state == LEVEL_COMPLETED) && !!this$static.callback && $onGameOver(this$static.callback, this$static.mazeState.state == LEVEL_COMPLETED?this$static.movesOut.count:$intern_0);
   if ((this$static.mazeState.state == LEVEL_FAILED || this$static.mazeState.state == LEVEL_COMPLETED) && !!this$static.movesIn) {
     this$static.lastReplayLength = this$static.movesOut.count;
     this$static.movesIn = null;
