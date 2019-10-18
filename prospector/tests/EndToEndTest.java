@@ -27,8 +27,9 @@ public class EndToEndTest {
     boolean success = true;
     success &= checkSolutions(xorMazes, solutions);
     success &= checkSolutions(procyonMazes, solutions);
-    System.out.println("========================================");
+    System.out.println("=====================================================");
     System.out.println(success ? "Overall: SUCCESS" : "Overall: FAILURE");
+    System.out.println("=====================================================");
     System.exit(success ? 0 : 1);
   }
 
