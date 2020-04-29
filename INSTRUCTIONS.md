@@ -176,4 +176,4 @@ This time, paste in the text have saved, and click "Load Highscores / Maze / Rep
 
 ### Play the game
 
-Playable at https://codemonkey232.github.io/prospector/
+Playable at https://olsen232.github.io/prospector/
